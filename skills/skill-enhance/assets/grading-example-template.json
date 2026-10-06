@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "eval_id": 1,
+  "configuration": "with_skill",
+  "executor_mode": "agent_host",
+  "assertion_results": [
+    {
+      "text": "<mechanical assertion that passed>",
+      "passed": true,
+      "evidence": "<quote, file path, or concrete output detail that proves the assertion passed>"
+    },
+    {
+      "text": "<mechanical assertion that failed>",
+      "passed": false,
+      "evidence": "<specific missing behavior or contrary output details>"
+    }
+  ],
+  "human_review_results": [
+    {
+      "text": "<holistic review question that passed>",
+      "judgment": "pass",
+      "evidence": "<why the provisional reviewer accepts this output>",
+      "reviewer_type": "llm_judge"
+    },
+    {
+      "text": "<holistic review question that needs another pass>",
+      "judgment": "needs_followup",
+      "evidence": "<what still feels wrong, risky, or incomplete>",
+      "reviewer_type": "llm_judge"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 1,
+    "total": 2,
+    "pass_rate": 0.5,
+    "human_review_needs_followup": 1
+  }
+}

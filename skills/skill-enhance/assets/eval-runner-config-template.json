@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "executor": {
+    "command": [
+      "python3",
+      "scripts/eval-adapters/executor/agent-host-executor.py"
+    ],
+    "bundle_paths": [
+      "scripts/eval-adapters/executor"
+    ],
+    "env_passthrough": [
+      "OPENAI_API_KEY"
+    ],
+    "mode": "agent_host",
+    "timeout_seconds": 300
+  },
+  "judge": {
+    "command": [
+      "python3",
+      "scripts/eval-adapters/judge/eval-judge.py"
+    ],
+    "bundle_paths": [
+      "scripts/eval-adapters/judge"
+    ],
+    "env_passthrough": [
+      "OPENAI_API_KEY"
+    ],
+    "reviewer_type": "llm_judge",
+    "timeout_seconds": 180
+  },
+  "limits": {
+    "stdout_bytes": 10485760,
+    "stderr_bytes": 10485760,
+    "artifact_total_bytes": 104857600,
+    "artifact_file_count": 1000,
+    "workspace_file_count": 10000,
+    "workspace_total_bytes": 262144000,
+    "persisted_workspace_bytes": 52428800
+  },
+  "execution": {
+    "configurations": [
+      "with_skill"
+    ],
+    "fail_fast": false,
+    "verify_stage2": true
+  },
+  "acceptance": {
+    "user_controlled": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "<skill-name>",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "<realistic prompt that should benefit from the skill>",
+      "expected_output": "<human-readable success description>",
+      "files": [],
+      "input_files": [],
+      "assertions": [],
+      "human_review": []
+    },
+    {
+      "id": 2,
+      "prompt": "<second realistic prompt or edge case>",
+      "expected_output": "<human-readable success description>",
+      "files": [],
+      "input_files": [],
+      "assertions": [],
+      "human_review": []
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "query": "/sample-target-skill validate this example output against the requested format and summarize blockers",
+    "should_trigger": true
+  },
+  {
+    "query": "Run the example workflow using the sample target skill, then report validation and uncertainty.",
+    "should_trigger": true
+  },
+  {
+    "query": "/skill-enhance tighten only the description of evals/fixtures/target-skill",
+    "should_trigger": false
+  },
+  {
+    "query": "Summarize this article without using or changing any skill.",
+    "should_trigger": false
+  }
+]

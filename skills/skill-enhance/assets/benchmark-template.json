@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "<timestamp>",
+  "skill_root": "<absolute-skill-root>",
+  "workspace": "<absolute-workspace-root>",
+  "iteration": "iteration-1",
+  "executor_mode": "agent_host",
+  "configurations": [
+    "with_skill",
+    "baseline"
+  ],
+  "case_results": [],
+  "run_summary": {
+    "with_skill": {
+      "cases_completed": 0,
+      "cases_failed": 0,
+      "completed_case_ids": [],
+      "pass_rate": {
+        "mean": 0.0,
+        "stddev": 0.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "reported_cases": 0
+      }
+    },
+    "baseline": {
+      "cases_completed": 0,
+      "cases_failed": 0,
+      "completed_case_ids": [],
+      "pass_rate": {
+        "mean": 0.0,
+        "stddev": 0.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "reported_cases": 0
+      }
+    }
+  },
+  "delta": {
+    "comparison_status": "unavailable",
+    "paired_completed_case_ids": [],
+    "unpaired_with_skill_case_ids": [],
+    "unpaired_baseline_case_ids": [],
+    "failed_case_ids": [],
+    "pass_rate": null,
+    "time_seconds": null,
+    "tokens": null
+  },
+  "review_summary": {
+    "with_skill": {
+      "needs_followup": 0,
+      "failed_case_ids": []
+    },
+    "baseline": {
+      "needs_followup": 0,
+      "failed_case_ids": []
+    }
+  },
+  "limitations": [],
+  "acceptance": {
+    "status": "pending_user_review",
+    "user_controlled": true,
+    "note": "Provisional grades do not accept or apply a skill change by themselves."
+  }
+}

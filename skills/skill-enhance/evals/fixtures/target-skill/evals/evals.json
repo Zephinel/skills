@@ -1,0 +1,43 @@
+{
+  "skill_name": "sample-target-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/sample-target-skill run the example workflow on references/example-format.md and validate the result",
+      "expected_output": "Resolve the target input, follow the example output sections, run or describe fixture validation, and summarize remaining uncertainty.",
+      "files": [
+        "SKILL.md",
+        "references/example-format.md",
+        "scripts/validate.sh"
+      ],
+      "assertions": [
+        "The response resolves the target input before producing output",
+        "The response follows or references the expected format sections",
+        "The response validates the result or states why validation could not be run",
+        "The response summarizes any remaining uncertainty"
+      ],
+      "human_review": [
+        "Would this output be useful as a minimal fixture acceptance case?",
+        "Did the response keep day-to-day execution separate from maintenance concerns?"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/sample-target-skill revise an example output, avoid duplicate operations, and report blockers",
+      "expected_output": "Ask only if a required target file, output format, or acceptance criterion is missing; otherwise revise once, avoid duplicate operations, validate, and report blockers.",
+      "files": [
+        "SKILL.md",
+        "scripts/validate.sh"
+      ],
+      "assertions": [
+        "The response asks at most one focused clarification question when critical information is missing",
+        "The response avoids duplicate operations",
+        "The response uses the validation step or reports a validation blocker",
+        "The response reports blockers without implying a clean success"
+      ],
+      "human_review": [
+        "Would this case catch regressions in the fixture's Clarification Gate and Script Usage rules?"
+      ]
+    }
+  ]
+}

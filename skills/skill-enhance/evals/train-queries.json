@@ -1,0 +1,34 @@
+[
+  {
+    "query": "/skill-enhance 优化这个 skill-enhance 技能，遇到拿不准的地方先停下来问我",
+    "should_trigger": true
+  },
+  {
+    "query": "/skill-enhance 收紧当前打开的这个 skill 的 workflow，保证质量前提下尽量减少步骤",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我从零创建一个新技能",
+    "should_trigger": false
+  },
+  {
+    "query": "帮我从当前分支执行一个普通开发任务",
+    "should_trigger": false
+  },
+  {
+    "query": "/skill-enhance 先让我选要优化哪个 skill，再决定做单点修复还是整技能升级",
+    "should_trigger": true
+  },
+  {
+    "query": "/skill-enhance 优化当前打开的这个 skill，并补一轮最小 eval 脚手架",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我 review 当前分支",
+    "should_trigger": false
+  },
+  {
+    "query": "帮我整理一下这批 issue",
+    "should_trigger": false
+  }
+]

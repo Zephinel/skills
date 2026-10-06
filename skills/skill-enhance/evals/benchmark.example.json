@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-07-10T00:00:00Z",
+  "skill_root": "/path/to/current-skill",
+  "workspace": "/path/to/current-skill/eval-workspace",
+  "iteration": "iteration-1",
+  "executor_mode": "agent_host",
+  "configurations": [
+    "with_skill",
+    "baseline"
+  ],
+  "case_results": [],
+  "run_summary": {
+    "with_skill": {
+      "cases_completed": 4,
+      "cases_failed": 0,
+      "completed_case_ids": ["1", "2", "3", "4"],
+      "pass_rate": {
+        "mean": 0.92,
+        "stddev": 0.05
+      },
+      "time_seconds": {
+        "mean": 48.0,
+        "stddev": 6.0
+      },
+      "tokens": {
+        "mean": 3900.0,
+        "stddev": 250.0,
+        "reported_cases": 4
+      }
+    },
+    "baseline": {
+      "cases_completed": 4,
+      "cases_failed": 0,
+      "completed_case_ids": ["1", "2", "3", "4"],
+      "pass_rate": {
+        "mean": 0.41,
+        "stddev": 0.11
+      },
+      "time_seconds": {
+        "mean": 31.0,
+        "stddev": 4.0
+      },
+      "tokens": {
+        "mean": 2300.0,
+        "stddev": 180.0,
+        "reported_cases": 4
+      }
+    }
+  },
+  "delta": {
+    "comparison_status": "complete",
+    "paired_completed_case_ids": ["1", "2", "3", "4"],
+    "unpaired_with_skill_case_ids": [],
+    "unpaired_baseline_case_ids": [],
+    "failed_case_ids": [],
+    "pass_rate": {
+      "mean": 0.51,
+      "stddev": 0.08,
+      "paired_case_ids": ["1", "2", "3", "4"]
+    },
+    "time_seconds": {
+      "mean": 17.0,
+      "stddev": 5.0,
+      "paired_case_ids": ["1", "2", "3", "4"]
+    },
+    "tokens": {
+      "mean": 1600.0,
+      "stddev": 220.0,
+      "paired_case_ids": ["1", "2", "3", "4"]
+    }
+  },
+  "review_summary": {
+    "with_skill": {
+      "needs_followup": 0,
+      "failed_case_ids": []
+    },
+    "baseline": {
+      "needs_followup": 2,
+      "failed_case_ids": []
+    }
+  },
+  "limitations": [],
+  "acceptance": {
+    "status": "pending_user_review",
+    "user_controlled": true,
+    "note": "Provisional grades do not accept or apply a skill change by themselves."
+  }
+}

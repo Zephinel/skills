@@ -1,0 +1,34 @@
+[
+  {
+    "query": "/skill-enhance 优化 evals/fixtures/target-skill 这个 skill 的 description，让它更容易触发，如果信息不够先问我",
+    "should_trigger": true
+  },
+  {
+    "query": "/skill-enhance 优化 skill-enhance，但如果你分不清该先改 description 还是 eval，就先停下来确认",
+    "should_trigger": true
+  },
+  {
+    "query": "草拟一个新的技能",
+    "should_trigger": false
+  },
+  {
+    "query": "这个测试为什么失败了",
+    "should_trigger": false
+  },
+  {
+    "query": "/skill-enhance 整技能升级 evals/fixtures/target-skill，保持主体自主性并把维护内容后置",
+    "should_trigger": true
+  },
+  {
+    "query": "/skill-enhance 收紧当前这个 SKILL.md，剥掉泛化内容并补 gotchas",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我给这个功能出个方案",
+    "should_trigger": false
+  },
+  {
+    "query": "读一下这个链接并总结重点",
+    "should_trigger": false
+  }
+]

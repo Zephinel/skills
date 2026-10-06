@@ -1,0 +1,18 @@
+[
+  {
+    "query": "/sample-target-skill run the example workflow on references/example-format.md and validate the result",
+    "should_trigger": true
+  },
+  {
+    "query": "Use the sample target skill to revise an example output and check it before summarizing.",
+    "should_trigger": true
+  },
+  {
+    "query": "/skill-enhance optimize evals/fixtures/target-skill and install its maintenance package",
+    "should_trigger": false
+  },
+  {
+    "query": "Create a brand-new Agent Skill for invoice parsing.",
+    "should_trigger": false
+  }
+]

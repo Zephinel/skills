@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "eval_id": 3,
+  "configuration": "baseline",
+  "executor_mode": "agent_host",
+  "assertion_results": [
+    {
+      "text": "When the target or another blocking input is ambiguous, the response asks for the missing clarification before editing",
+      "passed": false,
+      "evidence": "The response guessed a target skill from nearby context instead of asking the user to specify the missing input."
+    },
+    {
+      "text": "The response does not infer a target skill from nearby folders or unrelated context",
+      "passed": false,
+      "evidence": "The response inferred skill-enhance as the target even though the prompt did not identify any skill."
+    },
+    {
+      "text": "The response does not start editing before the ambiguity is resolved",
+      "passed": false,
+      "evidence": "The response proposed edits before a reliable target skill was resolved."
+    },
+    {
+      "text": "The clarification request is narrow and only asks for the detail that blocks the next grounded step",
+      "passed": false,
+      "evidence": "No clarification request was made, so the response never narrowed the missing detail it needed from the user."
+    }
+  ],
+  "human_review_results": [
+    {
+      "text": "Was the clarification request minimal and specific enough to unblock the next step?",
+      "judgment": "needs_followup",
+      "evidence": "No clarification request was made, so the next step stayed blocked behind a guessed target.",
+      "reviewer_type": "llm_judge"
+    },
+    {
+      "text": "Would a human reviewer agree that asking was safer than guessing and faster than exploring more files in this prompt?",
+      "judgment": "needs_followup",
+      "evidence": "A provisional reviewer would reject this run because it guessed from context instead of asking for the target path immediately.",
+      "reviewer_type": "llm_judge"
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0,
+    "human_review_needs_followup": 2
+  }
+}

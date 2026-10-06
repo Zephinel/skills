@@ -1,0 +1,18 @@
+[
+  {
+    "query": "<should-trigger prompt>",
+    "should_trigger": true
+  },
+  {
+    "query": "<second should-trigger prompt>",
+    "should_trigger": true
+  },
+  {
+    "query": "<near-miss should-not-trigger prompt>",
+    "should_trigger": false
+  },
+  {
+    "query": "<second near-miss should-not-trigger prompt>",
+    "should_trigger": false
+  }
+]

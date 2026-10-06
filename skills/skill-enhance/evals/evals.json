@@ -1,0 +1,268 @@
+{
+  "skill_name": "skill-enhance",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/skill-enhance 优化这个 skill-enhance 技能",
+      "expected_output": "Resolve skill-enhance as the target, inspect the current SKILL.md, identify one or two high-value directions, and ask one concise scope or direction question before editing because the broad request does not choose a scope.",
+      "files": ["SKILL.md"],
+      "assertions": [
+        "The response explicitly resolves skill-enhance as the target",
+        "The response inspects or proposes inspecting the existing skill rather than recreating it",
+        "The response identifies one or two grounded improvement directions",
+        "The response asks one concise scope or direction question before editing",
+        "The response does not implicitly install eval or self-improve capabilities"
+      ],
+      "human_review": ["Did the guided response make the next choice easy without presenting an oversized menu?"]
+    },
+    {
+      "id": 2,
+      "prompt": "/skill-enhance 优化 evals/fixtures/target-skill 这个 skill 的 description，让它更容易触发",
+      "expected_output": "Use the explicit target path, limit the change to trigger wording and nearby validation, and avoid adding unrelated maintenance scaffolding.",
+      "files": ["evals/fixtures/target-skill/SKILL.md"],
+      "assertions": [
+        "The response names the provided target path",
+        "The change remains scoped to description or discovery wording",
+        "The response does not install new eval, memory, or self-improve material",
+        "The response validates should-trigger and should-not-trigger behavior"
+      ],
+      "human_review": ["Would the wording materially improve trigger accuracy?"]
+    },
+    {
+      "id": 3,
+      "prompt": "/skill-enhance 优化这个技能",
+      "execution_context": {
+        "requires_neutral_context": true,
+        "current_file": "/must_not_be_inside_skill_root",
+        "working_directory": "/must_not_be_skill_root"
+      },
+      "expected_output": "Ask for the target skill before diagnosing, selecting capabilities, or editing.",
+      "files": [],
+      "assertions": [
+        "The response asks for the missing target",
+        "The response does not guess from unrelated context",
+        "The response does not start editing or ask capability questions before resolving the target"
+      ],
+      "human_review": ["Was the clarification minimal and sufficient?"]
+    },
+    {
+      "id": 4,
+      "prompt": "/skill-enhance 优化 skill-enhance，这次我只知道想提升触发和评测其中一项，但还没决定先做哪一个，你不要自己替我定",
+      "expected_output": "Resolve skill-enhance as the target and ask one narrow direction question between trigger wording and eval coverage.",
+      "files": ["SKILL.md"],
+      "assertions": [
+        "The response resolves skill-enhance as the target",
+        "The response asks the user to choose between the two named directions",
+        "The response does not silently choose or begin editing"
+      ],
+      "human_review": ["Was the question narrow and easy to answer?"]
+    },
+    {
+      "id": 5,
+      "prompt": "/skill-enhance 整技能升级 evals/fixtures/target-skill，并明确安装 eval + self-improve package：每次完成后写 memory/evidence.jsonl，维护 summary，修改前先确认",
+      "expected_output": "Treat eval and self-improve as explicit capabilities, improve the main body first, install a target-local package with one stable lifecycle lock, require cross-window exactly-once persistence before closeout, and keep later modification behind confirmation and an acceptance gate.",
+      "files": ["evals/fixtures/target-skill/SKILL.md"],
+      "assertions": [
+        "The response treats eval and self-improve as explicitly selected capabilities",
+        "The main body is improved before maintenance scaffolding",
+        "The response installs or specifies memory/.evidence.lock and scripts/append-memory.py",
+        "The caller supplies one stable run_id and reuses it for retries",
+        "Append searches active and archive evidence windows before writing",
+        "Identical retries return already_present and conflicting content fails",
+        "Append, rollover, and summary update share the same lifecycle lock",
+        "The final self-improve closeout includes actual memory status",
+        "User confirmation and an acceptance eval are required before keeping later changes"
+      ],
+      "human_review": [
+        "Would the design remain exactly-once across an archive rollover?",
+        "Did it keep self-improvement controlled rather than automatic?"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "/skill-enhance 优化 evals/fixtures/target-skill 这个 skill，目标明确但请先让我选单点修复还是整技能升级",
+      "expected_output": "Resolve the target, then ask the requested scope-selection question without conflating scope and capability.",
+      "files": ["evals/fixtures/target-skill/SKILL.md"],
+      "assertions": [
+        "The response names the target path",
+        "The response asks between 单点修复 and 整技能升级",
+        "The response does not start editing",
+        "The response does not conflate whole-skill scope with self-improve enablement"
+      ],
+      "human_review": ["Did the response keep scope separate from optional capabilities?"]
+    },
+    {
+      "id": 7,
+      "prompt": "/skill-enhance 单点修复 evals/fixtures/target-skill 里的 When to Use，已经发现条件和执行约束拆开不清楚，不要顺手加维护层",
+      "expected_output": "Keep the pass narrow, make When to Use trigger-only, relocate execution policy, and add no optional package.",
+      "files": ["evals/fixtures/target-skill/SKILL.md"],
+      "assertions": [
+        "The response stays scoped to When to Use and necessary relocation",
+        "The response treats When to Use as a user-trigger surface",
+        "The response does not add eval, memory, runner, or self-improve files",
+        "The response validates the touched trigger surface"
+      ],
+      "human_review": ["Did the result stay truly focused?"]
+    },
+    {
+      "id": 8,
+      "prompt": "/skill-enhance 整技能升级 evals/fixtures/plain-target-skill，整体优化就好，不需要 eval，也不要 self-improve 或 memory",
+      "expected_output": "Perform a whole-skill main-body improvement while leaving optional capabilities disabled.",
+      "files": ["evals/fixtures/plain-target-skill/SKILL.md"],
+      "assertions": [
+        "The response stays in whole-skill scope",
+        "The response explicitly leaves optional capabilities disabled",
+        "The response does not create or propose memory, self-improve, evals, or runner files",
+        "The ordinary closeout does not require a memory-status line",
+        "The response validates the improved main body"
+      ],
+      "human_review": ["Would this catch implicit maintenance installation?"]
+    },
+    {
+      "id": 9,
+      "prompt": "/skill-enhance 整技能升级 evals/fixtures/target-skill；这个目标已经明确启用了 eval 和 self-improve，请整理主体与维护层，但不要复制日常规则",
+      "expected_output": "Preserve enabled capabilities, keep ordinary rules authoritative in the main body, and move only capability-specific lifecycle behavior into the maintenance layer.",
+      "files": ["evals/fixtures/target-skill/SKILL.md"],
+      "assertions": [
+        "The response recognizes the package as already enabled",
+        "The main body remains independently understandable",
+        "Ordinary clarification and script rules remain in the main body",
+        "The maintenance layer contains only persistence, trigger, rollover, and acceptance differences",
+        "The response includes structural validation"
+      ],
+      "human_review": ["Did it preserve capability behavior without duplicating ordinary rules?"]
+    },
+    {
+      "id": 10,
+      "prompt": "/skill-enhance 给 evals/fixtures/plain-target-skill 安装 acceptance eval package，并用未修改版本作为 baseline；先冻结 baseline，再改 skill",
+      "expected_output": "Select eval_package, canonicalize all paths, freeze the unmodified target before edits, and make later snapshot runs reuse rather than overwrite it.",
+      "files": ["evals/fixtures/plain-target-skill/SKILL.md", "scripts/run-evals.sh"],
+      "assertions": [
+        "The response selects eval_package but not self_improve_package",
+        "All paths used for equality and containment are canonicalized",
+        "The response creates the snapshot before editing through --create-baseline",
+        "Normal snapshot runs do not overwrite the baseline",
+        "run-evals.sh is described as Stage 2 scaffolding only"
+      ],
+      "human_review": ["Would the sequence preserve a trustworthy old-skill comparison?"]
+    },
+    {
+      "id": 11,
+      "prompt": "/skill-enhance 目标 skill 已经改过了，但忘了提前冻结 baseline；旧版本在 ./recovered-old-skill",
+      "expected_output": "Do not snapshot the modified target; use the recovered source through --baseline-source or report that no trustworthy baseline exists.",
+      "files": ["scripts/run-evals.sh"],
+      "assertions": [
+        "The response does not copy the modified target as the previous-version baseline",
+        "The response uses or recommends --baseline-source",
+        "The response canonicalizes the recovered source",
+        "Later snapshot runs remain immutable"
+      ],
+      "human_review": ["Was baseline provenance unambiguous?"]
+    },
+    {
+      "id": 12,
+      "prompt": "/skill-enhance 这个 self-improve package 已启用。上次任务输出了执行总结但没有写 memory，请修复",
+      "expected_output": "Keep the fix conditional on self-improve, distinguish reflection from persistence, and require cross-window exactly-once persistence before closeout.",
+      "files": [
+        "evals/fixtures/target-skill/SKILL.md",
+        "references/Target-local self-optimization.md"
+      ],
+      "assertions": [
+        "The response says the gate applies only because self-improve is enabled",
+        "The response distinguishes visible summary from persistence",
+        "The caller provides and reuses a stable run_id",
+        "The helper searches active and archive windows",
+        "The helper verifies the complete object",
+        "Blocked persistence cannot coexist with clean completion",
+        "The requirement is not imposed on skills without self-improve"
+      ],
+      "human_review": ["Would this prevent summary-without-memory and retry-after-rollover regressions?"]
+    },
+    {
+      "id": 13,
+      "prompt": "/skill-enhance 这个已启用 self-improve 的目标 skill 完成优化并通过 acceptance gate 后，请安全开启新的观察窗口",
+      "expected_output": "Use the shared lifecycle helper with one stable rollover_id, publish a sidecar manifest binding the archive name and source fingerprint, archive the active window, create a new active file, and preserve cross-window run-id idempotency.",
+      "files": [
+        "evals/fixtures/target-skill/SKILL.md",
+        "assets/append-memory-template.py"
+      ],
+      "assertions": [
+        "Rollover acquires memory/.evidence.lock",
+        "The caller provides one stable rollover_id and reuses it on retry",
+        "A sidecar manifest binds rollover_id, archive name, source SHA-256, byte count, and record count",
+        "The previous active file is moved under memory/archive",
+        "A fresh empty active evidence file is created",
+        "The same operation returns already_rolled_over only after manifest and archive verification",
+        "Append retries search archives and do not enter the new active window",
+        "Retrying the old rollover does not alter a later non-empty active window",
+        "memory/summary.md is updated through a safe atomic helper path",
+        "The new active file alone is used for threshold counting"
+      ],
+      "human_review": ["Does rollover preserve history and operation identity without polluting the new window?"]
+    },
+    {
+      "id": 14,
+      "prompt": "/skill-enhance 整技能升级 evals/fixtures/plain-target-skill，我想让它以后建议优化，但不确定是否要落盘 memory 或补 eval，请先问我",
+      "expected_output": "Recognize unresolved capabilities, explain that full self-improve depends on evals, ask one concise question, and install nothing before confirmation.",
+      "files": ["evals/fixtures/plain-target-skill/SKILL.md"],
+      "assertions": [
+        "The response identifies the unresolved capability choice",
+        "The response explains the eval dependency",
+        "The response asks one concise capability question",
+        "The response does not install memory or eval scaffolding before confirmation"
+      ],
+      "human_review": ["Was the capability question concrete and brief?"]
+    },
+    {
+      "id": 15,
+      "prompt": "/skill-enhance 评测 runner 收到 --skill ./target 和 --workspace ./missing/../target，其中 missing 还不存在；请保证不会把 workspace 当成与 skill 不同的路径",
+      "expected_output": "Canonicalize both paths with strict-false resolution before comparison, detect that they resolve to the same directory, and refuse before mkdir, copy, or deletion.",
+      "files": ["scripts/run-evals.sh"],
+      "assertions": [
+        "The response canonicalizes all paths before equality or containment checks",
+        "The non-canonical workspace is recognized as equal to the skill root",
+        "The runner refuses before creating a snapshot",
+        "Reset-baseline deletion uses the same canonical path model"
+      ],
+      "human_review": ["Would this close the nonexistent-parent plus dot-dot bypass?"]
+    },
+    {
+      "id": 16,
+      "prompt": "/skill-enhance self-improve 的 run-42 已写入，随后 evidence 被 archive 并创建了空 active；closeout 前中断后用同一个 run-42 重试",
+      "expected_output": "Acquire the stable lock, search active and archive windows, return already_present from the archive, and leave the new active file empty.",
+      "files": [
+        "assets/append-memory-template.py",
+        "references/Target-local self-optimization.md"
+      ],
+      "assertions": [
+        "The lock is memory/.evidence.lock rather than the active evidence inode",
+        "Append searches memory/evidence.jsonl and memory/archive/*.jsonl",
+        "The archived identical run returns already_present",
+        "The new active evidence file remains empty",
+        "A different object with run-42 is a conflict"
+      ],
+      "human_review": ["Would this remain correct across a real observation-window rollover?"]
+    },
+    {
+      "id": 17,
+      "prompt": "/skill-enhance rollover 指定的 archive basename 已经存在且 active 为空，但不能确定它是不是当前这次操作产生的；请关闭这个语义歧义",
+      "expected_output": "Require a stable rollover_id and a verified sidecar manifest. Do not infer idempotent success from archive name plus empty active state alone. Bind the operation ID, archive name, and source fingerprint, and reject identity conflicts or unmanifested existing archives.",
+      "files": [
+        "assets/append-memory-template.py",
+        "references/Target-local self-optimization.md"
+      ],
+      "assertions": [
+        "The rollover command requires a stable caller-provided rollover_id",
+        "The helper writes a sidecar manifest before the archive rename",
+        "The manifest binds rollover_id, archive name, source SHA-256, byte count, and record count",
+        "An existing archive without a matching manifest is a conflict",
+        "The same archive name with a different rollover_id is a conflict",
+        "The same rollover_id with a different archive name is a conflict",
+        "already_rolled_over requires manifest and archive fingerprint verification",
+        "A prepared manifest can resume only when the active source still matches its fingerprint",
+        "A retry does not alter a later active observation window"
+      ],
+      "human_review": ["Does this remove caller-owned archive-name semantics from rollover idempotency?"]
+    }
+  ]
+}

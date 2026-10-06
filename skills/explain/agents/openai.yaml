@@ -1,0 +1,4 @@
+interface:
+  display_name: "explain"
+  short_description: "Clear explanations with STE-inspired prose and focused visuals"
+  default_prompt: "Use $explain to explain the current topic with ASD-STE100-inspired language and the clearest visual when useful."
