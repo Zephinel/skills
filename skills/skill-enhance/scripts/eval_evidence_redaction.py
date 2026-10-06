@@ -1,13 +1,13 @@
 """Secret-safe, bounded Stage 3 workspace and artifact persistence."""
 from __future__ import annotations
 
-from stage3_stable_copy import stable_copy_file as _stable_copy
+from eval_stable_copy import stable_copy_file as _stable_copy
 
 from pathlib import Path
 from typing import Any, Iterable
 
-from stage3_evidence import workspace_diff
-from stage3_types import (
+from eval_evidence import workspace_diff
+from eval_types import (
     SCHEMA_VERSION,
     RunnerError,
     atomic_write_json,
@@ -111,7 +111,7 @@ def record_partitioned_workspace_evidence(
     secret_values: Iterable[str] = (),
 ) -> dict[str, Any]:
     # Runtime context supplies limits for this case.
-    from stage3_runtime_context import bounded_snapshot_tree
+    from eval_runtime_context import bounded_snapshot_tree
 
     after = bounded_snapshot_tree(execution_workspace_root)
     if limits is not None:

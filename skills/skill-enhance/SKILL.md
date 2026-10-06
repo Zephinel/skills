@@ -127,14 +127,14 @@ When `eval_package` is selected:
 
 - freeze a previous-version snapshot explicitly before edits when comparison needs it;
 - normal snapshot runs only reuse and integrity-check that baseline;
-- install `run-eval-cases.py`, every bundled `stage3_*.py` module, and `evals/runner.json` together when automated Stage 3 is requested;
-- use only `scripts/run-eval-cases.py` as the public Stage 3 entry; internal `stage3_*.py` modules are not standalone commands;
+- install `run-eval-cases.py`, every bundled `eval_*.py` module, and `evals/runner.json` together when automated Stage 3 is requested;
+- use only `scripts/run-eval-cases.py` as the public Stage 3 entry; internal `eval_*.py` modules are not standalone commands;
 - keep executor and judge adapters under dedicated `scripts/` subtrees and expose only their required code;
 - keep executor requests free of reference answers and judge criteria;
 - use bounded, secret-safe evidence persistence and revalidate frozen subjects before every case;
 - keep final acceptance under user control.
 
-Read [`references/Stage 3 automated eval runtime.md`](./references/Stage%203%20automated%20eval%20runtime.md) and [`assets/stage3-adapter-contract.md`](./assets/stage3-adapter-contract.md) before installing or changing automated Stage 3.
+Read [`references/Automated eval runtime.md`](./references/Automated%20eval%20runtime.md) and [`assets/eval-adapter-contract.md`](./assets/eval-adapter-contract.md) before installing or changing automated Stage 3.
 
 Stage 2 prepares and verifies the workspace. Stage 3 executes cases, grades provisional results, and builds benchmark evidence. Neither stage accepts a skill change by itself.
 
@@ -175,8 +175,8 @@ Read [`references/Target-local self-optimization.md`](./references/Target-local%
 - [`references/Optimizing skill descriptions.md`](./references/Optimizing%20skill%20descriptions.md) — trigger wording.
 - [`references/Best practices.md`](./references/Best%20practices.md) — structure and workflow.
 - [`references/Evaluating skill output quality.md`](./references/Evaluating%20skill%20output%20quality.md) — eval design and grading.
-- [`references/Stage 3 automated eval runtime.md`](./references/Stage%203%20automated%20eval%20runtime.md) — automated Stage 3 lifecycle and hardening.
-- [`assets/stage3-adapter-contract.md`](./assets/stage3-adapter-contract.md) — adapter integration.
+- [`references/Automated eval runtime.md`](./references/Automated%20eval%20runtime.md) — automated Stage 3 lifecycle and hardening.
+- [`assets/eval-adapter-contract.md`](./assets/eval-adapter-contract.md) — adapter integration.
 - [`references/Using scripts in skills.md`](./references/Using%20scripts%20in%20skills.md) — script design.
 - [`references/Target-local self-optimization.md`](./references/Target-local%20self-optimization.md) — opt-in self-improve.
 - [`references/Quickstart.md`](./references/Quickstart.md) — broken structure or frontmatter.
@@ -187,7 +187,7 @@ Use only what the selected capability needs:
 
 - eval templates under `assets/`;
 - `scripts/run-evals.sh` for Stage 2;
-- `scripts/run-eval-cases.py` plus all `scripts/stage3_*.py` modules for automated Stage 3;
+- `scripts/run-eval-cases.py` plus all `scripts/eval_*.py` modules for automated Stage 3;
 - `assets/append-memory-entry-template.py` installed as target-local `scripts/append-memory.py`;
 - `assets/append-memory-template.py` installed beside it as `scripts/append-memory-runtime.py`;
 - `scripts/test-all.sh` for the complete package regression suite.

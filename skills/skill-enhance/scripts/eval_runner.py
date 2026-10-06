@@ -1,10 +1,10 @@
 """Execute Stage 3 Agent Skill evals as one owned, immutable evidence bundle."""
 from __future__ import annotations
 
-from stage3_case_policy import load_cases, select_cases
-from stage3_config_snapshot import load_config as load_runner_config
-from stage3_hardening_bundle import freeze_subjects as freeze_run_subjects
-from stage3_hardening_runtime import execute_one
+from eval_case_policy import load_cases, select_cases
+from eval_config_snapshot import load_config as load_runner_config
+from eval_hardening_bundle import freeze_subjects as freeze_run_subjects
+from eval_hardening_runtime import execute_one
 
 import argparse
 import json
@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from stage3_types import (
+from eval_types import (
     SCHEMA_VERSION,
     RunnerError,
     atomic_write_json,
@@ -28,7 +28,7 @@ from stage3_types import (
     validate_iteration_name,
     verify_stage2,
 )
-from stage3_bundle import (
+from eval_bundle import (
     bundle_identity,
     create_bundle_marker,
     iteration_lock,
@@ -37,7 +37,7 @@ from stage3_bundle import (
     validate_protected_iteration,
     verify_frozen_baseline,
 )
-from stage3_benchmark import aggregate_verified_benchmark as aggregate_benchmark
+from eval_benchmark import aggregate_verified_benchmark as aggregate_benchmark
 
 
 def main(argv: list[str] | None = None) -> int:

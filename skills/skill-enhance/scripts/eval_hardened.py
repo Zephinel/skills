@@ -4,9 +4,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from stage3_path_policy import reject_raw_path_symlinks
-from stage3_types import RunnerError, activate_hardening, lexical_absolute
-from stage3_runner import main as run
+from eval_path_policy import reject_raw_path_symlinks
+from eval_types import RunnerError, activate_hardening, lexical_absolute
+from eval_runner import main as run
 
 def _option_value(argv: list[str], name: str) -> str | None:
     prefix = name + "="

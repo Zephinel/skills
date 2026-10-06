@@ -1,13 +1,13 @@
 """Complete bounded workspace diff, artifact verification, and executor validation."""
 from __future__ import annotations
 
-from stage3_bounded_inventory import bounded_inventory as _bounded_inventory
+from eval_bounded_inventory import bounded_inventory as _bounded_inventory
 
 from pathlib import Path
 from typing import Any
 
-from stage3_bundle import validate_relative_path
-from stage3_types import (
+from eval_bundle import validate_relative_path
+from eval_types import (
     RunnerError,
     canonical,
     require_nonnegative_number,

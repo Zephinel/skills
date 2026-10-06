@@ -10,7 +10,7 @@ Keep these boundaries clear:
 - `eval_package` is opt-in;
 - full `self_improve_package` is opt-in and depends on `eval_package`;
 - `run-evals.sh` is Stage 2 baseline/workspace preparation;
-- `run-eval-cases.py` plus every bundled `stage3_*.py` module form the Stage 3 runtime;
+- `run-eval-cases.py` plus every bundled `eval_*.py` module form the Stage 3 runtime;
 - only `run-eval-cases.py` is a supported Stage 3 entry;
 - final acceptance remains user-controlled.
 
@@ -35,8 +35,10 @@ Do not use a self-improve fixture as evidence that ordinary whole-skill upgrades
 - `fixtures/target-skill/` — eval and self-improve packages explicitly enabled.
 - grading and benchmark examples — output-shape references only.
 - `../scripts/run-evals.sh` — Stage 2.
-- `../scripts/run-eval-cases.py` plus all `../scripts/stage3_*.py` — complete Stage 3 runtime.
+- `../scripts/run-eval-cases.py` plus all `../scripts/eval_*.py` — complete Stage 3 runtime.
 - `../scripts/test-all.sh` — single canonical regression entry.
+
+`eval_*.py` files implement the runtime. `eval-*-test.sh` files test that runtime. The stage numbers describe the lifecycle below, not file names or release versions.
 
 ## Baseline lifecycle
 
@@ -72,7 +74,7 @@ Copy the complete runtime and config template:
 
 ```bash
 cp <skill-enhance>/scripts/run-eval-cases.py scripts/run-eval-cases.py
-cp <skill-enhance>/scripts/stage3_*.py scripts/
+cp <skill-enhance>/scripts/eval_*.py scripts/
 cp <skill-enhance>/assets/eval-runner-config-template.json evals/runner.json
 chmod +x scripts/run-eval-cases.py
 ```
@@ -111,7 +113,7 @@ python3 scripts/run-eval-cases.py \
   --baseline snapshot
 ```
 
-Do not invoke an internal `stage3_*.py` module directly.
+Do not invoke an internal `eval_*.py` module directly.
 
 The hardened controller:
 
@@ -154,7 +156,7 @@ Case IDs are length-limited and case-insensitively unique. Duplicate selectors, 
 
 ## Adapter contract
 
-Read `../assets/stage3-adapter-contract.md` and `../references/Stage 3 automated eval runtime.md` before implementing adapters.
+Read `../assets/eval-adapter-contract.md` and `../references/Automated eval runtime.md` before implementing adapters.
 
 - Commands are argv arrays with `shell=False`.
 - Target-local command paths execute from frozen role bundles.

@@ -1,7 +1,7 @@
 """Hardened Stage 3 subject freezing, sanitization, and integrity checks."""
 from __future__ import annotations
 
-from stage3_path_policy import sensitive
+from eval_path_policy import sensitive
 
 import contextlib
 import shutil
@@ -9,9 +9,9 @@ import stat
 from pathlib import Path
 from typing import Any
 
-import stage3_bundle
-import stage3_types
-from stage3_types import (
+import eval_bundle
+import eval_types
+from eval_types import (
     AdapterConfig,
     RunnerConfig,
     RunnerError,
@@ -117,13 +117,13 @@ def _policy(path: Path) -> dict[str, Any]:
 
 
 def load_config(path: Path) -> RunnerConfig:
-    config = stage3_types.load_runner_config(path)
+    config = eval_types.load_runner_config(path)
     _POLICY[str(path.resolve(strict=True))] = _policy(path)
     return config
 
 
 def copy_execution(source: Path, destination: Path) -> tuple[dict[str, Any], list[str]]:
-    stage3_bundle.copy_tree(source, destination)
+    eval_bundle.copy_tree(source, destination)
     removed: list[str] = []
     paths = sorted(
         destination.rglob("*"),
@@ -140,7 +140,7 @@ def copy_execution(source: Path, destination: Path) -> tuple[dict[str, Any], lis
                 next(path.iterdir())
                 continue
             path.rmdir()
-    return stage3_bundle.tree_inventory(destination), sorted(removed)
+    return eval_bundle.tree_inventory(destination), sorted(removed)
 
 
 def reject_case_paths(cases: list[dict[str, Any]]) -> None:
@@ -239,7 +239,7 @@ def _copy(source_root: Path, destination_root: Path, relative: Path) -> None:
     if stat.S_ISLNK(st.st_mode):
         raise RunnerError(f"adapter bundle path is a symlink: {source}")
     if stat.S_ISDIR(st.st_mode):
-        stage3_bundle.copy_tree(source, destination)
+        eval_bundle.copy_tree(source, destination)
     elif stat.S_ISREG(st.st_mode) and st.st_nlink == 1:
         shutil.copy2(source, destination)
     else:
@@ -338,7 +338,7 @@ def _bundle(
     effective, records = _rewrite_command(
         command, live_skill_root, destination
     )
-    inventory = stage3_bundle.tree_inventory(destination)
+    inventory = eval_bundle.tree_inventory(destination)
     return effective, {
         "role": role,
         "bundle_paths": [path.as_posix() for path in selected],
@@ -378,7 +378,7 @@ def freeze_runtime(
         else config_path
     )
     _stable_copy(source, source_config, config_sha256, "runner config")
-    frozen = stage3_types.load_runner_config(source_config)
+    frozen = eval_types.load_runner_config(source_config)
     if frozen != initial_config:
         raise RunnerError("runner config changed between preflight and adapter freezing")
 
@@ -446,7 +446,7 @@ def freeze_runtime(
     atomic_write_json(effective_path, runner_config_json(effective), iteration_root)
     atomic_write_json(policy_path, policy, iteration_root)
     manifest = {
-        "schema_version": stage3_types.SCHEMA_VERSION,
+        "schema_version": eval_types.SCHEMA_VERSION,
         "source_config_path": str(config_path),
         "source_config_sha256": config_sha256,
         "frozen_source_config": str(source_config),
@@ -483,7 +483,7 @@ def freeze_runtime(
 def freeze_subjects(**kwargs: Any) -> dict[str, Any]:
     """Freeze all subjects and capture in-memory expectations for this process."""
 
-    result = stage3_bundle.freeze_run_subjects(**kwargs)
+    result = eval_bundle.freeze_run_subjects(**kwargs)
     iteration_root = Path(kwargs["iteration_root"]).resolve(strict=True)
     subjects_root = iteration_root / "subjects"
     manifest_path = subjects_root / "manifest.json"
@@ -509,7 +509,7 @@ def freeze_subjects(**kwargs: Any) -> dict[str, Any]:
     for key, root in root_specs.items():
         if root is None:
             continue
-        inventory = stage3_bundle.tree_inventory(Path(root))
+        inventory = eval_bundle.tree_inventory(Path(root))
         expected["roots"][key] = inventory["tree_sha256"]
         manifest_entry = manifest.get(key)
         if not isinstance(manifest_entry, dict) or manifest_entry.get("tree_sha256") != inventory["tree_sha256"]:
@@ -520,7 +520,7 @@ def freeze_subjects(**kwargs: Any) -> dict[str, Any]:
         raise RunnerError("subjects manifest is missing adapter provenance")
     for role in ("executor", "judge"):
         role_root = adapter_root / role
-        inventory = stage3_bundle.tree_inventory(role_root)
+        inventory = eval_bundle.tree_inventory(role_root)
         expected["roots"][f"adapter_{role}"] = inventory["tree_sha256"]
         role_manifest = adapters_manifest.get(role)
         if not isinstance(role_manifest, dict) or role_manifest.get("tree_sha256") != inventory["tree_sha256"]:
@@ -528,8 +528,8 @@ def freeze_subjects(**kwargs: Any) -> dict[str, Any]:
 
     _FROZEN_EXPECTATIONS[str(iteration_root)] = expected
     # Config parsing depends on this module's policy constants.
-    from stage3_config_snapshot import _parse_policy, _read_stable_text
-    from stage3_types import strict_json_loads
+    from eval_config_snapshot import _parse_policy, _read_stable_text
+    from eval_types import strict_json_loads
 
     adapter_root = Path(result["adapter_root"]).resolve(strict=True)
     source_config = adapter_root / "runner.source.json"
@@ -602,7 +602,7 @@ def verify_frozen_subjects(iteration_root: Path) -> None:
         path = roots[key]
         if not path.is_dir():
             raise RunnerError(f"frozen subject disappeared after freezing: {path}")
-        actual = stage3_bundle.tree_inventory(path)["tree_sha256"]
+        actual = eval_bundle.tree_inventory(path)["tree_sha256"]
         if actual != digest:
             raise RunnerError(
                 f"frozen subject changed after freezing: {key}; expected {digest}, got {actual}"

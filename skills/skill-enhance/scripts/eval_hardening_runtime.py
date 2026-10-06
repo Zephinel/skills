@@ -6,10 +6,10 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-import stage3_bundle
-import stage3_hardening_bundle
-from stage3_bounded_process import run_adapter as _run_adapter
-from stage3_runtime_context import (
+import eval_bundle
+import eval_hardening_bundle
+from eval_bounded_process import run_adapter as _run_adapter
+from eval_runtime_context import (
     bounded_snapshot_tree as snapshot_tree,
     bounded_validate_executor_output as validate_executor_output,
     redacting_atomic_write_json as atomic_write_json,
@@ -18,13 +18,13 @@ from stage3_runtime_context import (
     verified_stage_input_files,
     execute_with_context,
 )
-from stage3_evidence_redaction import (
+from eval_evidence_redaction import (
     persist_declared_workspace_content,
     persist_verified_artifacts,
     record_partitioned_workspace_evidence,
 )
-from stage3_process import normalized_grading
-from stage3_types import (
+from eval_process import normalized_grading
+from eval_types import (
     ALLOWED_REVIEW_JUDGMENTS,
     SCHEMA_VERSION,
     AdapterConfig,
@@ -156,7 +156,7 @@ def _persist_safe_adapter_run(
     if payload is not None:
         atomic_write_json(case_output / f"{prefix}.raw.json", payload, iteration_root)
 
-    stage3_hardening_bundle.verify_frozen_subjects(iteration_root)
+    eval_hardening_bundle.verify_frozen_subjects(iteration_root)
 
 
 def _require_success(
@@ -172,7 +172,7 @@ def _require_success(
 
 def _copy_bundle(source: Path, destination: Path) -> None:
     inventory = verified_copy_tree(source, destination)
-    source_inventory = stage3_bundle.tree_inventory(source)
+    source_inventory = eval_bundle.tree_inventory(source)
     if inventory["tree_sha256"] != source_inventory["tree_sha256"]:
         raise RunnerError("temporary adapter bundle differs from frozen bundle")
 
@@ -210,7 +210,7 @@ def _runtime_manifest(
     environment_keys: list[str],
     passthrough: list[str],
 ) -> dict[str, Any]:
-    inventory = stage3_bundle.tree_inventory(temporary_root)
+    inventory = eval_bundle.tree_inventory(temporary_root)
     portable_command: list[dict[str, Any]] = []
     for item in command:
         path = Path(item)
@@ -248,7 +248,7 @@ def execute(
     iteration_root: Path,
     runner_config: RunnerConfig,
 ) -> dict[str, Any]:
-    stage3_hardening_bundle.verify_frozen_subjects(iteration_root)
+    eval_hardening_bundle.verify_frozen_subjects(iteration_root)
     case_id = validate_case_id(case["id"])
     if case_output.exists() or case_output.is_symlink():
         raise RunnerError(f"case output unexpectedly exists in a fresh iteration: {case_output}")
@@ -259,7 +259,7 @@ def execute(
         "adapter runtime policy",
     )
     limits = require_object(policy.get("limits"), "runtime policy limits")
-    frozen_inputs = stage3_bundle.resolve_source_files(
+    frozen_inputs = eval_bundle.resolve_source_files(
         list(case.get("input_files", [])),
         inputs_subject_root,
         f"eval {case_id} frozen input",
@@ -282,7 +282,7 @@ def execute(
             selected_skill_root = execution_root / "skill"
             verified_copy_tree(selected_subject_root, selected_skill_root)
             execution_cwd = selected_skill_root
-            skill_files = stage3_bundle.resolve_source_files(
+            skill_files = eval_bundle.resolve_source_files(
                 list(case.get("files", [])),
                 selected_skill_root,
                 f"eval {case_id} staged skill",
@@ -501,7 +501,7 @@ def execute(
             }
         )
         atomic_write_json(case_output / "grading.json", grading, iteration_root)
-        stage3_hardening_bundle.verify_frozen_subjects(iteration_root)
+        eval_hardening_bundle.verify_frozen_subjects(iteration_root)
         return {
             "case_id": case["id"],
             "configuration": configuration,

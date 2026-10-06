@@ -5,7 +5,7 @@ import sys
 # live skill before the current subject is frozen.
 sys.dont_write_bytecode = True
 
-from stage3_hardened import main  # noqa: E402
+from eval_hardened import main  # noqa: E402
 
 if __name__ == "__main__":
     raise SystemExit(main())

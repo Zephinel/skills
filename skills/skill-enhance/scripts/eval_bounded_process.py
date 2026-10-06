@@ -10,8 +10,8 @@ import time
 from pathlib import Path
 from typing import Any
 
-import stage3_types
-from stage3_types import (
+import eval_types
+from eval_types import (
     AdapterConfig,
     AdapterRun,
     RunnerError,
@@ -103,7 +103,7 @@ def run_adapter(
     environment: dict[str, str],
     limits: dict[str, int],
 ) -> AdapterRun:
-    command = stage3_types.resolve_adapter_command(adapter.command, adapter_root)
+    command = eval_types.resolve_adapter_command(adapter.command, adapter_root)
     _reject_secret_argv(command, _explicit_secrets(environment))
 
     started = time.monotonic()

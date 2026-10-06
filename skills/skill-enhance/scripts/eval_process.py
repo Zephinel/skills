@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from stage3_types import (
+from eval_types import (
     ALLOWED_REVIEW_JUDGMENTS,
     SCHEMA_VERSION,
     AdapterConfig,
@@ -26,8 +26,8 @@ def run_adapter(
     """Reject the legacy unbounded process path.
 
     The hardened public entry replaces adapter execution with
-    ``stage3_bounded_process.run_adapter``. Keeping a callable legacy launcher
-    here would recreate the direct ``stage3_runner.py`` bypass.
+    ``eval_bounded_process.run_adapter``. Keeping a callable legacy launcher
+    here would recreate the direct ``eval_runner.py`` bypass.
     """
 
     raise RunnerError(

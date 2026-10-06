@@ -13,7 +13,7 @@ fail() {
 copy_runtime() {
   local target="$1"
   mkdir -p "$target/scripts" "$target/evals"
-  cp "$ROOT/scripts/run-evals.sh" "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$target/scripts/"
+  cp "$ROOT/scripts/run-evals.sh" "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$target/scripts/"
   chmod +x "$target/scripts/run-evals.sh" "$target/scripts/run-eval-cases.py"
   printf '# Review Target\n' > "$target/SKILL.md"
   printf '# Evals\n' > "$target/evals/README.md"
@@ -62,8 +62,8 @@ cat > "$GUARD/evals/runner.json" <<'JSON'
 {"schema_version":1,"executor":{"command":["python3","scripts/executor.py"],"mode":"agent_host","timeout_seconds":10},"judge":{"command":["python3","scripts/judge.py"],"reviewer_type":"test","timeout_seconds":10},"execution":{"configurations":["with_skill"],"fail_fast":true,"verify_stage2":true},"acceptance":{"user_controlled":true}}
 JSON
 bash "$GUARD/scripts/run-evals.sh" --skill "$GUARD" --workspace "$GUARD_W" --baseline none --iteration iteration-1 >/dev/null
-if python3 "$GUARD/scripts/stage3_runner.py" --skill "$GUARD" --workspace "$GUARD_W" --baseline none --iteration iteration-1 --dry-run >"$TMP/guard.out" 2>"$TMP/guard.err"; then
-  fail "stage3_runner.py bypassed the hardened public entry"
+if python3 "$GUARD/scripts/eval_runner.py" --skill "$GUARD" --workspace "$GUARD_W" --baseline none --iteration iteration-1 --dry-run >"$TMP/guard.out" 2>"$TMP/guard.err"; then
+  fail "eval_runner.py bypassed the hardened public entry"
 fi
 grep -q 'internal Stage 3 modules are not standalone' "$TMP/guard.err" \
   || fail "internal entry rejection was not explicit"

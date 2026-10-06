@@ -5,7 +5,7 @@ TMP="$(mktemp -d)"; TMP="$(cd "$TMP" && pwd -P)"; trap 'rm -rf "$TMP"' EXIT
 T="$TMP/target"; W="$TMP/workspace"
 mkdir -p "$T/scripts" "$T/evals"
 cp "$ROOT/scripts/run-evals.sh" "$T/scripts/"
-cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$T/scripts/"
+cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$T/scripts/"
 chmod +x "$T/scripts/run-evals.sh" "$T/scripts/run-eval-cases.py"
 cat > "$T/SKILL.md" <<'EOF'
 # Current Skill
@@ -114,4 +114,4 @@ cp "$W/iteration-1/subjects/adapters/judge/scripts/judge.py" "$T/scripts/judge.p
 printf 'input-v1\n' > "$T/evals/input.txt"
 python3 "$T/scripts/run-eval-cases.py" --skill "$T" --workspace "$W" --iteration iteration-1 --baseline snapshot --cases 1 --overwrite >/dev/null
 test ! -e "$W/iteration-1/eval-2"
-echo "skill-enhance Stage 3 self-test passed"
+echo "skill-enhance eval self-test passed"

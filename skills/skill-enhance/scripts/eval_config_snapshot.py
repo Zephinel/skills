@@ -7,9 +7,9 @@ import stat
 from pathlib import Path
 from typing import Any
 
-import stage3_hardening_bundle
-import stage3_types
-from stage3_types import (
+import eval_hardening_bundle
+import eval_types
+from eval_types import (
     RunnerConfig,
     RunnerError,
     require_object,
@@ -61,7 +61,7 @@ def _read_stable_text(path: Path) -> str:
     if resolved != raw_path:
         raise RunnerError(f"managed JSON must not use path aliases: {raw_path} -> {resolved}")
 
-    before_digest = stage3_types.file_sha256(raw_path)
+    before_digest = eval_types.file_sha256(raw_path)
     flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
     fd = os.open(raw_path, flags)
     try:
@@ -82,7 +82,7 @@ def _read_stable_text(path: Path) -> str:
         os.close(fd)
 
     after = raw_path.lstat()
-    after_digest = stage3_types.file_sha256(raw_path)
+    after_digest = eval_types.file_sha256(raw_path)
     read_digest = hashlib.sha256(raw).hexdigest()
     if not _same_inode(before, after) or not (
         before_digest == read_digest == after_digest
@@ -96,9 +96,9 @@ def _read_stable_text(path: Path) -> str:
 
 def _parse_core(root: dict[str, Any]) -> RunnerConfig:
     _reject_unknown(root, ROOT_KEYS, "runner config")
-    if root.get("schema_version") != stage3_types.SCHEMA_VERSION:
+    if root.get("schema_version") != eval_types.SCHEMA_VERSION:
         raise RunnerError(
-            f"runner config schema_version must be {stage3_types.SCHEMA_VERSION}"
+            f"runner config schema_version must be {eval_types.SCHEMA_VERSION}"
         )
 
     executor_obj = require_object(root.get("executor"), "executor")
@@ -110,14 +110,14 @@ def _parse_core(root: dict[str, Any]) -> RunnerConfig:
     _reject_unknown(execution, EXECUTION_KEYS, "execution")
     _reject_unknown(acceptance, ACCEPTANCE_KEYS, "acceptance")
 
-    executor = stage3_types._parse_adapter(executor_obj, "executor", executor=True)
-    judge = stage3_types._parse_adapter(judge_obj, "judge", executor=False)
+    executor = eval_types._parse_adapter(executor_obj, "executor", executor=True)
+    judge = eval_types._parse_adapter(judge_obj, "judge", executor=False)
     configurations = require_string_list(
         execution.get("configurations", ["with_skill"]),
         "execution.configurations",
     )
     if not configurations or any(
-        item not in stage3_types.ALLOWED_CONFIGURATIONS for item in configurations
+        item not in eval_types.ALLOWED_CONFIGURATIONS for item in configurations
     ):
         raise RunnerError("execution.configurations must contain with_skill and/or baseline")
     if len(set(configurations)) != len(configurations):
@@ -150,18 +150,18 @@ def _parse_policy(root: dict[str, Any]) -> dict[str, Any]:
                 or not all(character.isalnum() or character == "_" for character in name)
             ):
                 raise RunnerError(f"invalid environment variable name: {name!r}")
-            if name in stage3_hardening_bundle.MANAGED_ENV:
+            if name in eval_hardening_bundle.MANAGED_ENV:
                 raise RunnerError(f"{role}.env_passthrough must not override {name}")
 
         bundle_paths: list[str] = []
         for raw in require_string_list(obj.get("bundle_paths", []), f"{role}.bundle_paths"):
-            relative = stage3_hardening_bundle.safe_rel(raw, f"{role}.bundle_paths")
+            relative = eval_hardening_bundle.safe_rel(raw, f"{role}.bundle_paths")
             if not relative.parts or relative.parts[0] != "scripts":
                 raise RunnerError(
                     f"{role}.bundle_paths may include only adapter code under scripts/: "
                     f"{relative.as_posix()}"
                 )
-            if role == "executor" and stage3_hardening_bundle.sensitive(relative):
+            if role == "executor" and eval_hardening_bundle.sensitive(relative):
                 raise RunnerError(
                     "executor.bundle_paths exposes eval-control or reference-answer material: "
                     f"{relative.as_posix()}"
@@ -176,14 +176,14 @@ def _parse_policy(root: dict[str, Any]) -> dict[str, Any]:
         }
 
     raw_limits = require_object(root.get("limits", {}), "limits")
-    unknown = set(raw_limits) - set(stage3_hardening_bundle.DEFAULT_LIMITS)
+    unknown = set(raw_limits) - set(eval_hardening_bundle.DEFAULT_LIMITS)
     if unknown:
         raise RunnerError(f"unknown limits fields: {', '.join(sorted(unknown))}")
     result["limits"] = {
-        name: stage3_hardening_bundle._positive_int(
+        name: eval_hardening_bundle._positive_int(
             raw_limits.get(name, default), f"limits.{name}"
         )
-        for name, default in stage3_hardening_bundle.DEFAULT_LIMITS.items()
+        for name, default in eval_hardening_bundle.DEFAULT_LIMITS.items()
     }
     return result
 
@@ -225,7 +225,7 @@ def _reject_inline_credentials(root: dict[str, Any], policy: dict[str, Any]) -> 
 
 
 def load_config(path: Path) -> RunnerConfig:
-    stage3_types.require_hardening()
+    eval_types.require_hardening()
     raw_path = Path(path)
     text = _read_stable_text(raw_path)
     root = require_object(
@@ -234,5 +234,5 @@ def load_config(path: Path) -> RunnerConfig:
     config = _parse_core(root)
     policy = _parse_policy(root)
     _reject_inline_credentials(root, policy)
-    stage3_hardening_bundle._POLICY[str(raw_path.resolve(strict=True))] = policy
+    eval_hardening_bundle._POLICY[str(raw_path.resolve(strict=True))] = policy
     return config

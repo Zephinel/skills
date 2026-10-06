@@ -4,11 +4,11 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-import stage3_types
-from stage3_types import RunnerError
+import eval_types
+from eval_types import RunnerError
 
-_ORIGINAL_LOAD_CASES = stage3_types.load_cases
-_ORIGINAL_SELECT_CASES = stage3_types.select_cases
+_ORIGINAL_LOAD_CASES = eval_types.load_cases
+_ORIGINAL_SELECT_CASES = eval_types.select_cases
 MAX_CASE_ID_LENGTH = 128
 
 

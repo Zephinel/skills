@@ -1,6 +1,6 @@
-# Stage 3 automated eval runtime
+# Automated eval runtime
 
-Use this reference only when `eval_package` includes automated case execution. It defines the mandatory runtime boundary for `scripts/run-eval-cases.py` and the bundled `stage3_*.py` modules.
+Use this reference only when `eval_package` includes automated case execution. It defines the mandatory runtime boundary for `scripts/run-eval-cases.py` and the bundled `eval_*.py` modules.
 
 ## Supported environments
 
@@ -24,13 +24,13 @@ python3 scripts/run-eval-cases.py \
   --baseline snapshot
 ```
 
-`run-eval-cases.py` disables live-tree bytecode writes, checks public-entry paths, enables the internal entry guard, and then enters the controller with direct implementation dependencies. Do not invoke `stage3_runner.py`, compatibility exports, or another `stage3_*.py` module directly.
+`run-eval-cases.py` disables live-tree bytecode writes, checks public-entry paths, enables the internal entry guard, and then enters the controller with direct implementation dependencies. Do not invoke `eval_runner.py`, compatibility exports, or another `eval_*.py` module directly.
 
 Install these together:
 
 ```text
 scripts/run-eval-cases.py
-scripts/stage3_*.py
+scripts/eval_*.py
 evals/runner.json
 ```
 
@@ -230,6 +230,8 @@ The judge returns exactly one evidence-backed result for every assertion and bro
 ## Iteration ownership and fail-fast reporting
 
 An iteration is a locked one-shot evidence bundle.
+
+Workspace ownership markers and lock paths retain `.stage3-bundle.json` and `.stage3-locks/` for compatibility. These are persistent format names, not module names.
 
 - A non-empty iteration is rejected by default.
 - `--overwrite` requires a valid `.stage3-bundle.json` proving exact canonical ownership.

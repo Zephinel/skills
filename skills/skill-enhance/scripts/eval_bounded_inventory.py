@@ -6,8 +6,8 @@ import stat
 from pathlib import Path
 from typing import Any
 
-from stage3_bundle import _hash_file
-from stage3_types import RunnerError
+from eval_bundle import _hash_file
+from eval_types import RunnerError
 
 
 def _same_inode(left: os.stat_result, right: os.stat_result) -> bool:

@@ -11,7 +11,7 @@ python3 -m py_compile \
   "$ROOT/assets/append-memory-entry-template.py" \
   "$ROOT/assets/append-memory-template.py" \
   "$ROOT/scripts/run-eval-cases.py" \
-  "$ROOT"/scripts/stage3_*.py
+  "$ROOT"/scripts/eval_*.py
 
 python3 - "$ROOT" <<'PY'
 import json

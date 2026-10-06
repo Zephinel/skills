@@ -6,7 +6,7 @@ import os
 import stat
 from pathlib import Path
 
-from stage3_types import RunnerError, ensure_directory, is_within
+from eval_types import RunnerError, ensure_directory, is_within
 
 
 def _same_inode(left: os.stat_result, right: os.stat_result) -> bool:

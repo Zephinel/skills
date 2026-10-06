@@ -1,6 +1,6 @@
-# Stage 3 adapter contract
+# Eval adapter contract
 
-`run-eval-cases.py` is the only supported public Stage 3 entry. It checks public-entry paths, enables the internal entry guard, and then invokes one executor and one judge process per selected case/configuration. Internal `stage3_*.py` modules are implementation details and must reject standalone use.
+`run-eval-cases.py` is the only supported public Stage 3 entry. It checks public-entry paths, enables the internal entry guard, and then invokes one executor and one judge process per selected case/configuration. Internal `eval_*.py` modules are implementation details and must reject standalone use.
 
 The controller directly imports its mandatory policy, freezing, execution, and evidence implementations. Startup does not replace functions in other modules. Executor and judge processes remain the configurable adapters.
 

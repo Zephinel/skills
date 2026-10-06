@@ -47,12 +47,12 @@ Copy the complete runtime and config template:
 
 ```bash
 cp <skill-enhance>/scripts/run-eval-cases.py scripts/run-eval-cases.py
-cp <skill-enhance>/scripts/stage3_*.py scripts/
+cp <skill-enhance>/scripts/eval_*.py scripts/
 cp <skill-enhance>/assets/eval-runner-config-template.json evals/runner.json
 chmod +x scripts/run-eval-cases.py
 ```
 
-Only `scripts/run-eval-cases.py` is a public Stage 3 command. Internal `stage3_*.py` modules are not standalone entry points.
+Only `scripts/run-eval-cases.py` is a public Stage 3 command. Internal `eval_*.py` modules are not standalone entry points.
 
 Use dedicated role roots:
 
@@ -130,7 +130,7 @@ Case IDs are length-limited and case-insensitively unique. Duplicate selectors, 
 
 ## Adapter contract
 
-Read `assets/stage3-adapter-contract.md` and `references/Stage 3 automated eval runtime.md` from `skill-enhance` before implementing adapters.
+Read `assets/eval-adapter-contract.md` and `references/Automated eval runtime.md` from `skill-enhance` before implementing adapters.
 
 - Commands are argv arrays with `shell=False`.
 - Target-local command paths execute from frozen role bundles.

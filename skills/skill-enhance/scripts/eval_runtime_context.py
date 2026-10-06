@@ -9,13 +9,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-import stage3_bundle
-import stage3_evidence
-import stage3_hardening_bundle
-import stage3_types
-from stage3_config_snapshot import _read_stable_text
-from stage3_stable_copy import stable_copy_file, stage_input_files as _stable_stage_inputs
-from stage3_types import (
+import eval_bundle
+import eval_evidence
+import eval_hardening_bundle
+import eval_types
+from eval_config_snapshot import _read_stable_text
+from eval_stable_copy import stable_copy_file, stage_input_files as _stable_stage_inputs
+from eval_types import (
     RunnerError,
     require_object,
     require_string_list,
@@ -40,7 +40,7 @@ _CURRENT: ContextVar[RuntimeContext | None] = ContextVar(
 
 def _load_expected_json(path: Path, expected_sha256: str, label: str) -> dict[str, Any]:
     text = _read_stable_text(path)
-    if stage3_types.file_sha256(path) != expected_sha256:
+    if eval_types.file_sha256(path) != expected_sha256:
         raise RunnerError(f"{label} changed while its stable snapshot was loaded")
     return require_object(strict_json_loads(text, label), label)
 
@@ -48,8 +48,8 @@ def _load_expected_json(path: Path, expected_sha256: str, label: str) -> dict[st
 def _build_context(adapter_root: Path, iteration_root: Path) -> RuntimeContext:
     iteration_root = iteration_root.resolve(strict=True)
     adapter_root = adapter_root.resolve(strict=True)
-    stage3_hardening_bundle.verify_frozen_subjects(iteration_root)
-    expected = stage3_hardening_bundle._FROZEN_EXPECTATIONS.get(str(iteration_root))
+    eval_hardening_bundle.verify_frozen_subjects(iteration_root)
+    expected = eval_hardening_bundle._FROZEN_EXPECTATIONS.get(str(iteration_root))
     if expected is None:
         raise RunnerError("frozen-subject expectations are unavailable for this Stage 3 run")
 
@@ -135,7 +135,7 @@ def runtime_load_json(path: Path, label: str) -> Any:
     policy_path = context.iteration_root / "subjects" / "adapters" / "runtime-policy.json"
     if candidate == policy_path:
         return context.policy
-    return stage3_types.load_json(path, label)
+    return eval_types.load_json(path, label)
 
 
 def redact_text(text: str, secrets: dict[str, str] | None = None) -> str:
@@ -162,16 +162,16 @@ def redact_value(value: Any, secrets: dict[str, str] | None = None) -> Any:
 
 
 def redacting_atomic_write_json(path: Path, value: Any, containment_root: Path) -> None:
-    stage3_types.atomic_write_json(path, redact_value(value), containment_root)
+    eval_types.atomic_write_json(path, redact_value(value), containment_root)
 
 
 def bounded_snapshot_tree(root: Path) -> dict[str, dict[str, Any]]:
-    return stage3_evidence.snapshot_tree(root, limits=current_context().limits)
+    return eval_evidence.snapshot_tree(root, limits=current_context().limits)
 
 
 def bounded_validate_executor_output(*args: Any, **kwargs: Any) -> dict[str, Any]:
     kwargs["limits"] = current_context().limits
-    return stage3_evidence.validate_executor_output(*args, **kwargs)
+    return eval_evidence.validate_executor_output(*args, **kwargs)
 
 
 def verified_copy_tree(
@@ -181,7 +181,7 @@ def verified_copy_tree(
 ) -> dict[str, Any]:
     """Copy a frozen subject and compare the copy with its manifest digest."""
 
-    inventory = stage3_bundle.copy_tree(source, destination, excluded)
+    inventory = eval_bundle.copy_tree(source, destination, excluded)
     context = _CURRENT.get()
     if context is None:
         return inventory

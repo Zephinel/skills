@@ -2,7 +2,7 @@
 
 Use structured evals to determine whether a skill improves real tasks, remains reliable at its boundaries, and performs better than no skill or an unmodified previous version.
 
-This reference covers eval design and interpretation. For automated execution hardening, also read [`Stage 3 automated eval runtime.md`](./Stage%203%20automated%20eval%20runtime.md) and [`../assets/stage3-adapter-contract.md`](../assets/stage3-adapter-contract.md).
+This reference covers eval design and interpretation. For automated execution hardening, also read [`Automated eval runtime.md`](./Automated%20eval%20runtime.md) and [`../assets/eval-adapter-contract.md`](../assets/eval-adapter-contract.md).
 
 ## Separate trigger and output evaluation
 
@@ -118,7 +118,7 @@ Do not use `cp -r` after editing and call the result a previous-version baseline
 - writes grading and benchmark results;
 - leaves acceptance pending for user review.
 
-Use only the hardened public entry and install every bundled `stage3_*.py` module with it.
+Use only the hardened public entry and install every bundled `eval_*.py` module with it.
 
 ## Write useful assertions
 

@@ -15,7 +15,7 @@ fail() {
 make_target() {
   local target="$1"
   mkdir -p "$target/evals" "$target/scripts"
-  cp "$ROOT/scripts/run-evals.sh" "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$target/scripts/"
+  cp "$ROOT/scripts/run-evals.sh" "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$target/scripts/"
   chmod +x "$target/scripts/run-evals.sh" "$target/scripts/run-eval-cases.py"
   printf '# Test Skill\n' > "$target/SKILL.md"
   printf '# Evals\n' > "$target/evals/README.md"

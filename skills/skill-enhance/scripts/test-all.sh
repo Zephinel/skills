@@ -8,11 +8,11 @@ for test_script in \
   static-checks-test.sh \
   self-test.sh \
   path-safety-regressions-test.sh \
-  stage3-self-test.sh \
-  stage3-reference-isolation-test.sh \
-  stage3-no-skill-self-test.sh \
-  stage3-review-regressions-test.sh \
-  stage3-runtime-hardening-test.sh \
+  eval-self-test.sh \
+  eval-reference-isolation-test.sh \
+  eval-no-skill-self-test.sh \
+  eval-review-regressions-test.sh \
+  eval-runtime-hardening-test.sh \
   full-review-regressions-test.sh \
   memory-root-binding-test.sh \
   lock-stress-test.sh

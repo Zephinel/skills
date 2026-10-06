@@ -5,7 +5,7 @@ TMP="$(mktemp -d)"; TMP="$(cd "$TMP" && pwd -P)"; trap 'rm -rf "$TMP"' EXIT
 T="$TMP/target"; W="$TMP/workspace"
 mkdir -p "$T/scripts/executor_lib" "$T/scripts/judge_lib" "$T/evals/rubrics"
 cp "$ROOT/scripts/run-evals.sh" "$T/scripts/"
-cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$T/scripts/"
+cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$T/scripts/"
 chmod +x "$T/scripts/run-evals.sh" "$T/scripts/run-eval-cases.py"
 printf '# Hardened Skill\n' > "$T/SKILL.md"
 printf '# Evals\n' > "$T/evals/README.md"
@@ -94,7 +94,7 @@ PY
 S="$TMP/shared-target"; SW="$TMP/shared-workspace"
 mkdir -p "$S/scripts" "$S/evals"
 cp "$ROOT/scripts/run-evals.sh" "$S/scripts/"
-cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$S/scripts/"
+cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$S/scripts/"
 chmod +x "$S/scripts/run-evals.sh" "$S/scripts/run-eval-cases.py"
 printf '# Shared Adapter Skill\n' > "$S/SKILL.md"
 printf '# Evals\n' > "$S/evals/README.md"
@@ -119,4 +119,4 @@ bash "$S/scripts/run-evals.sh" --skill "$S" --workspace "$SW" --baseline none --
 python3 "$S/scripts/run-eval-cases.py" --skill "$S" --workspace "$SW" --baseline none --iteration iteration-1 >/dev/null
 test -f "$SW/iteration-1/eval-1/with_skill/grading.json"
 
-echo 'skill-enhance Stage 3 runtime hardening test passed'
+echo 'skill-enhance eval runtime hardening test passed'

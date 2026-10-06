@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 TMP="$(mktemp -d)"; TMP="$(cd "$TMP" && pwd -P)"; trap 'rm -rf "$TMP"' EXIT
 T="$TMP/target"; W="$TMP/workspace"; mkdir -p "$T/scripts" "$T/evals"
-cp "$ROOT/scripts/run-evals.sh" "$T/scripts/"; cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$T/scripts/"
+cp "$ROOT/scripts/run-evals.sh" "$T/scripts/"; cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$T/scripts/"
 printf '# Skill\n' > "$T/SKILL.md"; printf 'input\n' > "$T/evals/input.txt"
 printf '# Evals\n' > "$T/evals/README.md"; printf '[]\n' > "$T/evals/train-queries.json"; printf '[]\n' > "$T/evals/validation-queries.json"
 cat > "$T/evals/evals.json" <<'JSON'
@@ -46,4 +46,4 @@ assert str(t/'SKILL.md') not in text and req['skill_files']==[] and req['omitted
 assert not (r/'subjects/adapters/skill/evals/evals.json').exists()
 assert json.load(open(r/'benchmark.json'))['run_summary']['baseline']['cases_completed']==1
 PY
-echo "skill-enhance Stage 3 no-skill self-test passed"
+echo "skill-enhance eval no-skill self-test passed"

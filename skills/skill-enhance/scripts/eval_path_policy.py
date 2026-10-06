@@ -5,7 +5,7 @@ import os
 import stat
 from pathlib import Path
 
-from stage3_types import RunnerError
+from eval_types import RunnerError
 
 CONTROL_EXACT = {
     "evals.json",

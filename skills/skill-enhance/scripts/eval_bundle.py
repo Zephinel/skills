@@ -12,7 +12,7 @@ from typing import Any, Iterator
 
 import fcntl
 
-from stage3_types import (
+from eval_types import (
     SCHEMA_VERSION,
     RunnerConfig,
     RunnerError,
@@ -319,8 +319,8 @@ def freeze_run_subjects(*, iteration_root: Path, skill_root: Path,
                         baseline_root: Path | None, cases: list[dict[str, Any]],
                         workspace: Path, config_path: Path, config_sha256: str,
                         runner_config: RunnerConfig) -> dict[str, Any]:
-    from stage3_hardening_bundle import copy_execution, freeze_runtime, reject_case_paths
-    from stage3_stable_copy import stage_input_files
+    from eval_hardening_bundle import copy_execution, freeze_runtime, reject_case_paths
+    from eval_stable_copy import stage_input_files
 
     reject_case_paths(cases)
     subjects_root = iteration_root / "subjects"
@@ -471,7 +471,7 @@ def iteration_lock(*, workspace_raw: Path, workspace: Path, iteration: str,
 def preflight_case_plan(*, cases: list[dict[str, Any]], configurations: list[str],
                         current_skill_root: Path, baseline_root: Path | None,
                         workspace: Path) -> list[dict[str, Any]]:
-    from stage3_hardening_bundle import reject_case_paths
+    from eval_hardening_bundle import reject_case_paths
 
     reject_case_paths(cases)
     plan: list[dict[str, Any]] = []

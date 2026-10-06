@@ -8,7 +8,7 @@ TARGET="$TMP/target"
 WORKSPACE="$TMP/workspace"
 mkdir -p "$TARGET/scripts" "$TARGET/evals/rubrics" "$TARGET/evals/archive" "$TARGET/evals/cases"
 cp "$ROOT/scripts/run-evals.sh" "$TARGET/scripts/"
-cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$TARGET/scripts/"
+cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$TARGET/scripts/"
 chmod +x "$TARGET/scripts/run-evals.sh" "$TARGET/scripts/run-eval-cases.py"
 
 printf '# Reference Isolation Skill\n' > "$TARGET/SKILL.md"

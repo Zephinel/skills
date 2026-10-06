@@ -1,14 +1,14 @@
 """Aggregate Stage 3 results with finite paired case comparisons."""
 from __future__ import annotations
 
-from stage3_hardening_bundle import verify_frozen_subjects
-from stage3_types import load_json, require_object
+from eval_hardening_bundle import verify_frozen_subjects
+from eval_types import load_json, require_object
 
 import math
 from pathlib import Path
 from typing import Any, Iterable
 
-from stage3_types import RunnerError, SCHEMA_VERSION, utc_now
+from eval_types import RunnerError, SCHEMA_VERSION, utc_now
 
 
 def _finite_values(values: Iterable[float], label: str) -> list[float]:

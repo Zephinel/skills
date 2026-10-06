@@ -17,7 +17,7 @@ cleanup() {
 trap cleanup EXIT
 [[ -z "$DEBUG_ROOT" ]] || set -x
 T="$TMP/target"; W="$TMP/workspace"; mkdir -p "$T/scripts" "$T/evals"
-cp "$ROOT/scripts/run-evals.sh" "$T/scripts/"; cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"stage3_*.py "$T/scripts/"
+cp "$ROOT/scripts/run-evals.sh" "$T/scripts/"; cp "$ROOT/scripts/run-eval-cases.py" "$ROOT/scripts/"eval_*.py "$T/scripts/"
 printf '# Current\n' > "$T/SKILL.md"; printf '# Evals\n' > "$T/evals/README.md"; printf '[]\n' > "$T/evals/train-queries.json"; printf '[]\n' > "$T/evals/validation-queries.json"
 cat > "$T/evals/evals.json" <<'JSON'
 {"skill_name":"regressions","evals":[
@@ -99,4 +99,4 @@ write_config timeout.py 0.2
 mkdir -p "$W/timeout"; set +e
 python3 "$T/scripts/run-eval-cases.py" --skill "$T" --workspace "$W" --iteration timeout --baseline none --cases 1 >/dev/null; s=$?; set -e; test "$s" = 1
 sleep 1.5; test ! -e "$W/timeout/eval-1/with_skill/child-survived.txt"; grep -q '"timed_out": true' "$W/timeout/eval-1/with_skill/executor-status.json"
-echo "skill-enhance Stage 3 review regressions passed"
+echo "skill-enhance eval review regressions passed"
