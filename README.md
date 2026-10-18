@@ -1,32 +1,33 @@
 # Skills
 
-Two reusable agent skills for explaining technical topics and improving existing skills.
+Three reusable agent skills for explaining technical topics, improving existing skills, and getting a review from a web chat you are already signed into.
 
 | Skill | Purpose |
 | --- | --- |
 | [explain](skills/explain/SKILL.md) | Explain concepts, mechanisms, procedures, and differences with clear language and focused visuals. |
 | [skill-enhance](skills/skill-enhance/SKILL.md) | Improve an existing skill's triggers, scope, workflow, references, scripts, and evaluations. |
+| [review-with-gpt](skills/review-with-gpt/SKILL.md) | Send a file, a diff, or a question to a signed-in web chat and read the answer back. |
 
 ## Install
 
-Install either or both skills with the [skills CLI](https://github.com/vercel-labs/skills):
+Install any of the skills with the [skills CLI](https://github.com/vercel-labs/skills):
 
 ```bash
-npx skills add Zephinel/skills --skill explain --skill skill-enhance
+npx skills add Zephinel/skills --skill explain --skill skill-enhance --skill review-with-gpt
 ```
 
-To install both globally for Codex without prompts:
+To install all three globally for Codex without prompts:
 
 ```bash
 npx skills add Zephinel/skills \
-  --skill explain --skill skill-enhance \
+  --skill explain --skill skill-enhance --skill review-with-gpt \
   --agent codex --global --yes
 ```
 
 Update installed global copies:
 
 ```bash
-npx skills update explain skill-enhance --global
+npx skills update explain skill-enhance review-with-gpt --global
 ```
 
 ## explain
@@ -60,6 +61,20 @@ $skill-enhance Review all of ./skills/report-writer. Improve its workflow withou
 $skill-enhance Add acceptance evals to ./skills/report-writer and compare against a frozen copy of its current version.
 ```
 
+## review-with-gpt
+
+`review-with-gpt` posts a prompt into a chat page the user already has open in Chrome — ChatGPT, Claude, Gemini — and reads the answer back as text. It uses the signed-in browser session, so it needs no API key. It can send a file, a diff, or a question, wait for the turn, and recover from a stalled or truncated answer.
+
+The skill runs on macOS with Google Chrome. The preferred route drives the page through JavaScript from Apple Events, which requires **View → Developer → Allow JavaScript from Apple Events** in Chrome. The fallback route pastes and clicks with compiled Swift helpers; it needs macOS accessibility and screen-recording permission, and it is slower and less reliable.
+
+The prompt leaves the machine under the user's account. Do not put credentials in it.
+
+```text
+$review-with-gpt Ask the ChatGPT tab I have open to review this diff.
+$review-with-gpt 去 ChatGPT 里问问它这段迁移脚本有什么风险。
+$review-with-gpt Pull the latest answer out of the Gemini tab.
+```
+
 ## Repository layout
 
 ```text
@@ -72,6 +87,9 @@ $skill-enhance Add acceptance evals to ./skills/report-writer and compare agains
     │   ├── SKILL.md
     │   ├── agents/
     │   └── references/
+    ├── review-with-gpt/
+    │   ├── SKILL.md
+    │   └── scripts/
     └── skill-enhance/
         ├── SKILL.md
         ├── assets/
