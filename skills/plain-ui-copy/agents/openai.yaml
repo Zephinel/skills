@@ -1,0 +1,4 @@
+interface:
+  display_name: "plain-ui-copy"
+  short_description: "Audit, rewrite, and lock down plain-language UI copy with STE rules and test fences"
+  default_prompt: "Use $plain-ui-copy to audit user-facing UI copy, trace call-site edge cases, and add systematic wording tests or a text fence."

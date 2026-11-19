@@ -1,10 +1,11 @@
 # Skills
 
-Three reusable agent skills for explaining technical topics, improving existing skills, and getting a review from a web chat you are already signed into.
+Four reusable agent skills for explaining technical topics, auditing and locking down plain-language UI copy, improving existing skills, and getting a review from a web chat you are already signed into.
 
 | Skill | Purpose |
 | --- | --- |
 | [explain](skills/explain/SKILL.md) | Explain concepts, mechanisms, procedures, and differences with clear language and focused visuals. |
+| [plain-ui-copy](skills/plain-ui-copy/SKILL.md) | Audit, rewrite, and systematically enforce plain-language UI copy with STE-inspired rules, call-site edge checks, and a zero-dependency scanner. |
 | [skill-enhance](skills/skill-enhance/SKILL.md) | Improve an existing skill's triggers, scope, workflow, references, scripts, and evaluations. |
 | [review-with-gpt](skills/review-with-gpt/SKILL.md) | Send a file, a diff, or a question to a signed-in web chat and read the answer back. |
 
@@ -13,21 +14,21 @@ Three reusable agent skills for explaining technical topics, improving existing 
 Install any of the skills with the [skills CLI](https://github.com/vercel-labs/skills):
 
 ```bash
-npx skills add Zephinel/skills --skill explain --skill skill-enhance --skill review-with-gpt
+npx skills add Zephinel/skills --skill explain --skill plain-ui-copy --skill skill-enhance --skill review-with-gpt
 ```
 
-To install all three globally for Codex without prompts:
+To install all four globally for Codex without prompts:
 
 ```bash
 npx skills add Zephinel/skills \
-  --skill explain --skill skill-enhance --skill review-with-gpt \
+  --skill explain --skill plain-ui-copy --skill skill-enhance --skill review-with-gpt \
   --agent codex --global --yes
 ```
 
 Update installed global copies:
 
 ```bash
-npx skills update explain skill-enhance review-with-gpt --global
+npx skills update explain plain-ui-copy skill-enhance review-with-gpt --global
 ```
 
 ## explain
@@ -42,6 +43,18 @@ Example prompts using Codex's `$skill-name` syntax:
 $explain Explain why a cache can return stale data. Use a small diagram.
 $explain Compare these two implementations and show the change as a diff.
 $explain Explain this deployment procedure in Chinese.
+```
+
+## plain-ui-copy
+
+`plain-ui-copy` audits, rewrites, and locks down user-facing UI copy (prompts, settings pages, help lines, buttons, notices, status lines, CLI help, and chat-visible error/refusal messages). It applies ~80% ASD-STE100 principles, native phrasing, one word per concept, actor boundaries, call-site edge-value checks, and systematic tests or text fences so wording standards do not regress when new features land.
+
+It includes a zero-dependency Python 3 scanner (`scripts/scan_copy.py`) supporting JS/TS, Python, JSON, and C-style source files with project-local config rules, narrow allowlists, and block exclusions.
+
+```text
+$plain-ui-copy Audit the user-facing copy files in this repo and rank issues by frequency.
+$plain-ui-copy 审查这个扩展的所有用户提示文案，修正问题并加上文本栅栏测试。
+$plain-ui-copy Run scan_copy.py on src/copy/ and check edge-value rendering for pluralization and punctuation.
 ```
 
 ## skill-enhance
@@ -87,6 +100,11 @@ $review-with-gpt Pull the latest answer out of the Gemini tab.
     │   ├── SKILL.md
     │   ├── agents/
     │   └── references/
+    ├── plain-ui-copy/
+    │   ├── SKILL.md
+    │   ├── agents/
+    │   ├── references/
+    │   └── scripts/
     ├── review-with-gpt/
     │   ├── SKILL.md
     │   └── scripts/
@@ -106,6 +124,7 @@ Run the complete `skill-enhance` regression suite from the repository root with 
 
 ```bash
 bash skills/skill-enhance/scripts/test-all.sh
+python3 skills/plain-ui-copy/scripts/test_scan_copy.py
 ```
 
 The suite checks shell and Python syntax, JSON data, evaluation lifecycle, path safety, reference isolation, evidence handling, memory binding, and lock behavior. GitHub Actions runs it on Linux and macOS with Python 3.12.
