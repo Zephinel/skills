@@ -1,0 +1,4 @@
+interface:
+  display_name: "readme-craft"
+  short_description: "Draft, audit, and optimize repository READMEs as truthful, portable landing pages and indexes"
+  default_prompt: "Use $readme-craft to audit or rewrite this repository's README, checking factual accuracy, registry portability, screenshots, and anti-rot guards."

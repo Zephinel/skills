@@ -1,11 +1,12 @@
 # Skills
 
-Four reusable agent skills for explaining technical topics, auditing and locking down plain-language UI copy, improving existing skills, and getting a review from a web chat you are already signed into.
+Five reusable agent skills for explaining technical topics, auditing and locking down plain-language UI copy, drafting and optimizing repository READMEs, improving existing skills, and getting a review from a web chat you are already signed into.
 
 | Skill | Purpose |
 | --- | --- |
 | [explain](skills/explain/SKILL.md) | Explain concepts, mechanisms, procedures, and differences with clear language and focused visuals. |
 | [plain-ui-copy](skills/plain-ui-copy/SKILL.md) | Audit, rewrite, and systematically enforce plain-language UI copy with STE-inspired rules, call-site edge checks, and a zero-dependency scanner. |
+| [readme-craft](skills/readme-craft/SKILL.md) | Draft, audit, and optimize repository READMEs as truthful, portable landing pages and indexes with visual review and anti-rot guards. |
 | [skill-enhance](skills/skill-enhance/SKILL.md) | Improve an existing skill's triggers, scope, workflow, references, scripts, and evaluations. |
 | [review-with-gpt](skills/review-with-gpt/SKILL.md) | Send a file, a diff, or a question to a signed-in web chat and read the answer back. |
 
@@ -14,21 +15,21 @@ Four reusable agent skills for explaining technical topics, auditing and locking
 Install any of the skills with the [skills CLI](https://github.com/vercel-labs/skills):
 
 ```bash
-npx skills add Zephinel/skills --skill explain --skill plain-ui-copy --skill skill-enhance --skill review-with-gpt
+npx skills add Zephinel/skills --skill explain --skill plain-ui-copy --skill readme-craft --skill skill-enhance --skill review-with-gpt
 ```
 
-To install all four globally for Codex without prompts:
+To install all five globally for Codex without prompts:
 
 ```bash
 npx skills add Zephinel/skills \
-  --skill explain --skill plain-ui-copy --skill skill-enhance --skill review-with-gpt \
+  --skill explain --skill plain-ui-copy --skill readme-craft --skill skill-enhance --skill review-with-gpt \
   --agent codex --global --yes
 ```
 
 Update installed global copies:
 
 ```bash
-npx skills update explain plain-ui-copy skill-enhance review-with-gpt --global
+npx skills update explain plain-ui-copy readme-craft skill-enhance review-with-gpt --global
 ```
 
 ## explain
@@ -55,6 +56,16 @@ It includes a zero-dependency Python 3 scanner (`scripts/scan_copy.py`) supporti
 $plain-ui-copy Audit the user-facing copy files in this repo and rank issues by frequency.
 $plain-ui-copy 审查这个扩展的所有用户提示文案，修正问题并加上文本栅栏测试。
 $plain-ui-copy Run scan_copy.py on src/copy/ and check edge-value rendering for pluralization and punctuation.
+```
+
+## readme-craft
+
+`readme-craft` drafts, audits, localizes, and optimizes repository README files as concise landing pages and indexes for users, developers, contributors, and AI coding agents. It enforces truth to repository reality (separating published stable releases from unreleased `main` features), cross-registry portability (GitHub, npm, PyPI, plugin stores), multi-language creation and parity, visual screenshot auditing, and lightweight anti-rot guards.
+
+```text
+$readme-craft Audit this repo's README, screenshots, and links, and list issues by priority.
+$readme-craft 为这个仓库起草一份简洁的 README，先展示核心效果，再给安装和本地开发步骤。
+$readme-craft Add a README.zh.md matching README.md with localized anchors, UI labels, and language switchers.
 ```
 
 ## skill-enhance
@@ -105,6 +116,10 @@ $review-with-gpt Pull the latest answer out of the Gemini tab.
     │   ├── agents/
     │   ├── references/
     │   └── scripts/
+    ├── readme-craft/
+    │   ├── SKILL.md
+    │   ├── agents/
+    │   └── references/
     ├── review-with-gpt/
     │   ├── SKILL.md
     │   └── scripts/
