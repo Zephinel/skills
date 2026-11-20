@@ -1,34 +1,34 @@
 [
   {
-    "query": "/skill-enhance 优化这个 skill-enhance 技能，遇到拿不准的地方先停下来问我",
+    "query": "优化一下 ./skills/report-writer 这个技能，遇到拿不准的范围或方向先停下来问我",
     "should_trigger": true
   },
   {
-    "query": "/skill-enhance 收紧当前打开的这个 skill 的 workflow，保证质量前提下尽量减少步骤",
+    "query": "帮我收紧当前打开的这个 SKILL.md 的 workflow，保证质量前提下尽量减少步骤",
     "should_trigger": true
   },
   {
-    "query": "帮我从零创建一个新技能",
+    "query": "我们仓库里的 deploy-helper 技能老是在不相关的提问里误触发，帮我改一下它的触发描述和边界",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我给现有的 ./skills/release-notes 技能补一套最小 acceptance eval 脚手架",
+    "should_trigger": true
+  },
+  {
+    "query": "帮我从零创建一个全新的技能，用来自动生成周报",
     "should_trigger": false
   },
   {
-    "query": "帮我从当前分支执行一个普通开发任务",
+    "query": "用当前仓库里的 readme-craft 技能帮我审查一下根目录的 README.md",
     "should_trigger": false
   },
   {
-    "query": "/skill-enhance 先让我选要优化哪个 skill，再决定做单点修复还是整技能升级",
-    "should_trigger": true
-  },
-  {
-    "query": "/skill-enhance 优化当前打开的这个 skill，并补一轮最小 eval 脚手架",
-    "should_trigger": true
-  },
-  {
-    "query": "帮我 review 当前分支",
+    "query": "解释一下 Agent Skill 里 SKILL.md 的 frontmatter 和 progressive disclosure 是怎么工作的",
     "should_trigger": false
   },
   {
-    "query": "帮我整理一下这批 issue",
+    "query": "帮我跑一下 skills/plain-ui-copy 里的单元测试，看看有没有报错",
     "should_trigger": false
   }
 ]

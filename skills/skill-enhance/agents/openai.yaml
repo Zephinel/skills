@@ -1,0 +1,4 @@
+interface:
+  display_name: "skill-enhance"
+  short_description: "Improve an existing skill's triggers, workflow, references, scripts, or opt-in evals"
+  default_prompt: "Use $skill-enhance to inspect and improve an existing skill without silently installing optional eval or self-improve packages."

@@ -46,14 +46,22 @@ while IFS= read -r f; do readmes+=("$f"); done < <(find . -maxdepth 1 -type f \(
 # 1. Line budget check
 wc -l "${readmes[@]}"
 
-# 2. Multi-language heading-depth parity against README.md
-for f in "${readmes[@]}"; do
-  [ "$f" = "./README.md" ] && continue
-  diff -u <(grep -E '^#{1,3} ' ./README.md | sed 's/[^#].*//') \
-          <(grep -E '^#{1,3} ' "$f" | sed 's/[^#].*//') || echo "heading drift: $f"
-done
+# 2. Multi-language heading-depth parity against README.md (skips fenced code blocks)
+headings() {
+  awk '/^[[:space:]]*(`{3,}|~{3,})/{in_fence=!in_fence; next} !in_fence && /^#{1,3} /{print $1}' "$1"
+}
+if [ -f ./README.md ]; then
+  for f in "${readmes[@]}"; do
+    [ "$f" = "./README.md" ] && continue
+    diff -u <(headings ./README.md) <(headings "$f") || echo "heading drift: $f"
+  done
+fi
 
-# 3. Portability & personal-path check (for permanent CI guards, skip fenced code blocks)
-! grep -nE '^\s*>\s*\[!' "${readmes[@]}"
-! grep -rnE '/Users/[A-Za-z0-9._-]+/' "${readmes[@]}" $([ -d docs ] && echo docs)
+# 3. Portability & personal-path check (skips fenced code blocks for alerts)
+for f in "${readmes[@]}"; do
+  awk '/^[[:space:]]*(`{3,}|~{3,})/{in_fence=!in_fence; next} !in_fence && /^[[:space:]]*>[[:space:]]*\[!/{print FILENAME ":" NR ":" $0; bad=1} END{exit bad}' "$f"
+done
+targets=("${readmes[@]}")
+[ -d docs ] && targets+=(docs)
+! grep -rnE '/(Users|home)/[A-Za-z0-9._-]+/' "${targets[@]}"
 ```

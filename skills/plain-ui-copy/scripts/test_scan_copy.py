@@ -120,6 +120,62 @@ class ScanCopyTests(unittest.TestCase):
             findings = scan_copy.scan_files([str(target)], max_words=12)
             self.assertEqual([(f.line, f.rule_id) for f in findings], [(3, "double-punctuation"), (4, "long-sentence")])
 
+    def test_chinese_copy_extra_rules_and_prose_only(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = self.write(
+                root,
+                "zh.json",
+                json.dumps(
+                    {
+                        "blocked": "权限扩展拦截了此调用。",
+                        "chained": "操作失败;请重试。",
+                        "mime": "text/plain;charset=utf-8",
+                        "ok": "此调用已被拦截。",
+                    },
+                    ensure_ascii=False,
+                ),
+            )
+            config = {
+                "disableRules": ["modal-may", "future-conditional"],
+                "extraRules": [
+                    {
+                        "id": "no-internal-module-zh",
+                        "name": "do not name the internal extension",
+                        "pattern": "权限扩展",
+                        "flags": "",
+                    }
+                ],
+            }
+            findings = scan_copy.scan_files([str(target)], config=config)
+            self.assertEqual(
+                [(f.location, f.rule_id) for f in findings],
+                [("blocked", "no-internal-module-zh"), ("chained", "semicolon-chain")],
+            )
+
+    def test_multiline_imports_and_exclude_block_boundaries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = self.write(
+                root,
+                "my-model-copy.ts",
+                "\n".join([
+                    "import {",
+                    "  foo,",
+                    "} from '../shared/may-fail.ts';",
+                    'export const calibrated = "This may fail.";',
+                    'export const next = "This will also fail.";',
+                ]),
+            )
+            config = {
+                "excludeBlocks": [{"file": "model-copy.ts", "start": "export const calibrated", "end": ";"}],
+            }
+            findings = scan_copy.scan_files([str(target)], config=config)
+            self.assertEqual(
+                [(f.line, f.rule_id) for f in findings],
+                [(4, "modal-may"), (5, "future-conditional")],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

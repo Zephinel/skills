@@ -5,7 +5,7 @@ description: Explain concepts, mechanisms, procedures, or differences with ASD-S
 
 # Explain
 
-Help the user understand, assess, or act on the specified topic. Apply ASD-STE100-inspired principles to the prose. Choose the smallest visual that makes the key relationships clear. This skill is self-contained; it does not require show-me.
+Help the user understand, assess, or act on the specified topic. Apply ASD-STE100-inspired principles to the prose and choose the smallest visual that makes the key relationships clear.
 
 ## Identify the topic
 
@@ -49,7 +49,7 @@ When explaining real code, inspect the relevant implementation before drawing it
 
 Show a complete block when most of it is new, omitted context would hide ownership or order, or the user needs a complete copyable target. Verify both the old and new structures when explaining a change.
 
-For HTML, use real labels and data from the topic. Match the product's colors, type, spacing, and components when that context is available; otherwise use a simple, readable style. Support desktop and mobile sizes. Save as `explain-{topic}.html`, open it with the host's preview tool when available, and provide a file link. Check the content, file accessibility, and available rendered output. State when rendering was not checked. Add interaction only when it helps understanding; do not expand an explanation into full website development.
+For HTML, use real labels and data from the topic. Match the product's colors, type, spacing, and components when that context is available; otherwise use a simple, readable style. Support desktop and mobile sizes. Save as `explain-{topic}.html` in a user-specified location or a scratch/temp directory so it does not pollute a clean Git working tree (if saved inside a repo, note that it is a scratch file), open it with the host's preview tool when available, and provide a file link. Check the content, file accessibility, and available rendered output. State when rendering was not checked. Add interaction only when it helps understanding; do not expand an explanation into full website development.
 
 ## Language and standards boundary
 
@@ -69,137 +69,9 @@ For strict compliance, rule numbers, approved vocabulary, or a specific edition,
 
 ## Examples
 
-These fictional examples demonstrate output shapes. Replace their names, paths, and facts with those of the current topic. Do not output every form at once. The examples are written in English for this instruction document; produce user-facing prose and labels in the selected response language.
+Use these two compact patterns as a baseline (write prose and labels in the selected response language). For full output-shape examples (pseudocode, call trees, component trees, file trees, Mermaid, subject-matched diffs, and HTML), read [Output shape examples](references/examples.md).
 
-### Decision logic: pseudocode
-
-If the content is unchanged, return the cached result. Otherwise, save the content and return the new result.
-
-```text
-Pseudocode:
-on(save)
-  if content is unchanged
-    return cached result
-  write new content
-  return fresh result
-```
-
-### Call order: call tree
-
-Create the session before opening its page. During session creation, save the prompt before launching the agent.
-
-```text
-Illustrative call tree (siblings appear in execution order):
-submitForm
-├── createSession
-│   ├── persistPrompt
-│   └── launchAgent
-└── navigateToSession
-```
-
-### UI structure: component tree
-
-The page owns the run state. The toolbar starts the action, and the timeline displays the results.
-
-```text
-Component sketch (not executable JSX):
-<SessionPage> (src/routes/session.tsx)
-  useSessionEvents() → runState
-  <SessionToolbar onRun={startRun} />
-  <SessionTimeline state={runState} />
-```
-
-### File responsibilities: shallow file tree
-
-The command module parses actions, the session module manages state, and the transport module handles network communication.
-
-```text
-Illustrative directory structure:
-src/
-├── commands/       # Parses user actions
-├── sessions/       # Manages session state
-└── transport/      # Handles network communication
-```
-
-### Component interaction: Mermaid
-
-In this example, the UI expands the command before sending the prompt to the service. The service streams the result back.
-
-```mermaid
-sequenceDiagram
-    actor User
-    participant UI
-    participant Service
-    User->>UI: Select command
-    UI->>UI: Expand command
-    UI->>Service: Send prompt
-    Service-->>UI: Stream result
-```
-
-### Local changes: diffs that match the subject
-
-Component change sketch: add a run button to the toolbar and a result card to the timeline.
-
-```diff
- <SessionPage>
-   <SessionToolbar>
-+    <RunSkillButton />
-   <SessionTimeline>
-+    <SkillResultCard />
-```
-
-Directory change sketch: split the transport file into request and event modules.
-
-```diff
- src/
- ├── commands/
- ├── sessions/
--└── transport.ts
-+└── transport/
-+    ├── client.ts
-+    └── events.ts
-```
-
-Call change sketch: expand the skill mention before launching the agent. During navigation, subscribe to events after opening the page.
-
-```diff
- submitForm
-   createSession
-     persistPrompt
-+    expandSkillMention
-     launchAgent
-   navigateToSession
-+    subscribeToEvents
-```
-
-Logic change sketch: add an early return. Write to storage only when the content changes.
-
-```diff
- on(save)
-+  if content is unchanged
-+    return cached result
-   write new content
-   return fresh result
-```
-
-### Complete target: full code block
-
-When the user needs a complete copyable function, show the full implementation. This TypeScript example assumes the input always starts with `/`.
-
-```ts
-function expandSkill(command: string): string {
-  const skillName = command.slice(1);
-  return `use the ${skillName} skill`;
-}
-```
-
-### Visual layout: focused HTML
-
-Request: “Show how the Save button differs while saving and after a failed save.”
-
-Output shape: create one page that displays both states side by side. Show a disabled button and progress message while saving. Show the error and a retry action after failure. Stack the states on narrow screens. Use verified UI copy; label proposed designs as proposals. Save and open the HTML and provide its file link instead of only describing the planned page.
-
-### Concept: short prose with a diagram
+### Concept: short prose with a conceptual sketch
 
 Request: “Explain visually why a cache can return old data.”
 

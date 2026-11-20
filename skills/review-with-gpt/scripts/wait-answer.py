@@ -53,9 +53,19 @@ JSON.stringify({
 '''
 
 
-def poll(tab: str) -> dict:
+def positive_int(value: str) -> int:
+    try:
+        parsed = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"must be a positive integer, got {value!r}") from exc
+    if parsed < 1:
+        raise argparse.ArgumentTypeError(f"must be >= 1, got {parsed}")
+    return parsed
+
+
+def poll(tab: int, window: int = 1) -> dict:
     r = subprocess.run(
-        [sys.executable, str(RUN_JS), tab],
+        [sys.executable, str(RUN_JS), str(tab), "--window", str(window)],
         input=SNIPPET,
         capture_output=True,
         text=True,
@@ -66,18 +76,20 @@ def poll(tab: str) -> dict:
     return json.loads(r.stdout.strip())
 
 
-def main() -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("tab")
+    ap.add_argument("tab", type=positive_int, help="1-based Chrome tab index")
+    ap.add_argument("--window", type=positive_int, default=1,
+                    help="1-based Chrome window index (default 1)")
     ap.add_argument("--out", default="/tmp/review-answer.md")
     ap.add_argument("--poll", type=float, default=20.0)
-    ap.add_argument("--stable", type=int, default=2,
+    ap.add_argument("--stable", type=positive_int, default=2,
                     help="equal readings after Stop is gone (default 2)")
-    ap.add_argument("--stall-polls", type=int, default=6,
+    ap.add_argument("--stall-polls", type=positive_int, default=6,
                     help="unchanged polls before declaring a stall (default 6)")
     ap.add_argument("--cap", type=float, default=600.0,
                     help="hard cap in seconds (default 600)")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     # A one-shot poller must not let a previous run's answer masquerade as
     # this run's result. Start from no file; a stall with real partial text
@@ -101,7 +113,7 @@ def main() -> int:
             print(f"TIMEOUT {elapsed:.0f}s chars={last['chars'] if last else 0} out={args.out}")
             return 4
         try:
-            data = poll(args.tab)
+            data = poll(args.tab, window=args.window)
         except Exception as e:
             print(f"ERROR {e}")
             return 1
@@ -113,7 +125,8 @@ def main() -> int:
             flush=True,
         )
 
-        if data["chars"] == last_chars:
+        chars_unchanged = data["chars"] == last_chars
+        if chars_unchanged:
             unchanged += 1
         else:
             unchanged = 0
@@ -123,11 +136,11 @@ def main() -> int:
             usable = (data["current"] and data["chars"] > 0
                       and not (data.get("text") or "").startswith("You said:"))
             if usable:
-                if stable + 1 >= args.stable:
+                stable = (stable + 1) if (stable > 0 and chars_unchanged) else 1
+                if stable >= args.stable:
                     save(args.out, data)
                     print(f"DONE chars={data['chars']} out={args.out}")
                     return 0
-                stable += 1
             else:
                 stable = 0
             if unchanged >= args.stall_polls:

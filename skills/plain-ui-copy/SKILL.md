@@ -1,6 +1,6 @@
 ---
 name: plain-ui-copy
-description: Audit, write, rewrite, and systematically enforce plain-language user-facing UI copy using ~80% ASD-STE100 principles, native phrasing, one word per concept, call-site edge-value checks, and automated tests or text fences. Use when reviewing or editing UI strings, prompts, settings pages, help lines, buttons, labels, notices, status bars, CLI help, or chat-visible refusal/error text; also use for requests like "检查文案", "审查 UI 文案", "优化提示文案", "规范文案并加测试/文本栅栏", or "audit user-facing wording". Not for marketing copy, calibrated model-only prompts, or verbatim third-party/user data.
+description: Audit, rewrite, and lock down user-facing UI copy using STE-inspired plain language, one word per concept, call-site edge-value checks, and automated tests or text fences. Use when reviewing or editing UI strings, prompts, settings, buttons, status bars, CLI help, or chat-visible error/refusal text (e.g. "审查 UI 文案", "规范文案并加文本栅栏", "audit user-facing wording"). Not for marketing copy, calibrated model-only prompts, or verbatim third-party/user data.
 ---
 
 # Plain UI Copy
@@ -82,11 +82,11 @@ Record explicitly what is in scope and what is exempted.
 
 ### Step 2 — Run the bundled scanner, then read aloud
 
-Run the zero-dependency Python 3 scanner first to catch mechanical defects quickly with exact line numbers:
+Run the zero-dependency Python 3 scanner first to catch mechanical defects quickly with exact line numbers (resolve `<skill-dir>` to the directory containing this `SKILL.md`):
 
 ```bash
-python3 scripts/scan_copy.py <copy-file-or-dir> [...]
-python3 scripts/scan_copy.py --config plain-ui-copy.json --max-words 25 <copy-file-or-dir> [...]
+python3 "<skill-dir>/scripts/scan_copy.py" <copy-file-or-dir> [...]
+python3 "<skill-dir>/scripts/scan_copy.py" --config plain-ui-copy.json --max-words 25 <copy-file-or-dir> [...]
 ```
 
 Supported file types: `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, `.cjs`, `.py`, `.json`, `.swift`, `.go`, `.rs`, `.java`, `.kt`. The scanner strips comments and `import`/`export ... from` lines automatically, supports `--format json`, inline ignore comments (`plain-ui-copy: ignore-next-line`, `ignore-start`/`ignore-end`), and a project JSON config (`extraRules`, `disableRules`, `allow`, `excludeBlocks`, `maxWords`). See [Sample config](references/checklist.md#sample-scanner-config).

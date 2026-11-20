@@ -105,7 +105,11 @@ IGNORE_NEXT_RE = re.compile(r"plain-ui-copy:\s*ignore-next-line\b")
 IGNORE_START_RE = re.compile(r"plain-ui-copy:\s*ignore-start\b")
 IGNORE_END_RE = re.compile(r"plain-ui-copy:\s*ignore-end\b")
 IMPORT_LINE_RE = re.compile(
-    r"^\s*(?:import|export\s+(?:\*|\{[^}]*\})\s+from)\b[^;\n]*;?\s*$",
+    r"^\s*(?:"
+    r"import\s+(?:type\s+)?(?:[^{;\n]*\{[^}]*\}\s*from|[^;\n]*\bfrom)\s+['\"][^'\"]+['\"]"
+    r"|import\s+['\"][^'\"]+['\"]"
+    r"|export\s+(?:type\s+)?(?:\*(?:\s+as\s+\w+)?|\{[^}]*\})\s+from\s+['\"][^'\"]+['\"]"
+    r")\s*;?\s*$",
     re.MULTILINE,
 )
 WORD_RE = re.compile(r"[A-Za-z][A-Za-z0-9'-]*")
@@ -142,25 +146,32 @@ def compile_flags(flag_str: str) -> int:
 def strip_excluded_blocks(source: str, rel_path: str, exclude_blocks: list[dict[str, Any]]) -> str:
     """Replace excluded ranges with matching newlines so line numbers stay accurate."""
     for block in exclude_blocks:
-        target = block.get("file", "")
-        if target and not (rel_path == target or rel_path.endswith("/" + target) or rel_path.endswith(target)):
+        target = str(block.get("file", "")).lstrip("./")
+        if target and not (rel_path == target or rel_path.endswith("/" + target)):
             continue
         start_marker = block.get("start")
         end_marker = block.get("end")
         if not start_marker:
             continue
-        start_idx = source.find(start_marker)
-        if start_idx == -1:
-            continue
-        if end_marker:
-            end_idx = source.find(end_marker, start_idx + len(start_marker))
-            if end_idx == -1:
+        search_from = 0
+        while True:
+            start_idx = source.find(start_marker, search_from)
+            if start_idx == -1:
+                break
+            if end_marker:
+                end_idx = source.find(end_marker, start_idx + len(start_marker))
+                if end_idx == -1:
+                    end_idx = len(source)
+                else:
+                    end_idx += len(end_marker)
+            else:
                 end_idx = len(source)
-        else:
-            end_idx = len(source)
-        removed = source[start_idx:end_idx]
-        replacement = "\n" * removed.count("\n")
-        source = source[:start_idx] + replacement + source[end_idx:]
+            removed = source[start_idx:end_idx]
+            replacement = "\n" * removed.count("\n")
+            source = source[:start_idx] + replacement + source[end_idx:]
+            search_from = start_idx + len(replacement)
+            if not end_marker:
+                break
     return source
 
 
@@ -362,14 +373,22 @@ def extract_json_literals(source: str) -> list[Literal]:
 
 
 def is_prose_like(text: str) -> bool:
-    """True if text looks like human-readable prose rather than a bare identifier, path, or glob."""
+    """True if text looks like human-readable prose rather than a bare path or glob."""
     stripped = text.strip()
-    if not stripped or not re.search(r"[A-Za-z]", stripped):
+    if not stripped or not any(ch.isalpha() for ch in stripped):
         return False
     # Skip relative file paths and glob patterns like ../foo or **/*.env
     if stripped.startswith(("./", "../", "**/")) and " " not in stripped:
         return False
     return True
+
+
+def has_prose_structure(text: str) -> bool:
+    """True if text contains multi-word spacing or non-space-delimited script letters (e.g., CJK)."""
+    stripped = text.strip()
+    if " " in stripped:
+        return True
+    return sum(1 for ch in stripped if ord(ch) > 127 and ch.isalpha()) >= 2
 
 
 def check_literals(
@@ -397,7 +416,7 @@ def check_literals(
             if phrase:
                 cleaned = cleaned.replace(phrase, "")
         for rule_id, rule_name, regex, prose_only in compiled:
-            if prose_only and " " not in cleaned.strip():
+            if prose_only and not has_prose_structure(cleaned):
                 continue
             if regex.search(cleaned):
                 findings.append(

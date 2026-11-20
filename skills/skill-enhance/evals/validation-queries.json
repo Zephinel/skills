@@ -1,34 +1,34 @@
 [
   {
-    "query": "/skill-enhance 优化 evals/fixtures/target-skill 这个 skill 的 description，让它更容易触发，如果信息不够先问我",
+    "query": "改一下 evals/fixtures/target-skill 这个 skill 的 description，让它在正确场景下更容易触发，信息不够就先问我",
     "should_trigger": true
   },
   {
-    "query": "/skill-enhance 优化 skill-enhance，但如果你分不清该先改 description 还是 eval，就先停下来确认",
+    "query": "我想把 ./skills/db-migrator 整技能升级一下，但不确定该先改触发词还是先拆 references，你先给建议让我定",
     "should_trigger": true
   },
   {
-    "query": "草拟一个新的技能",
+    "query": "整技能升级 evals/fixtures/target-skill，把冗长细节挪到 references，保持主体独立可读",
+    "should_trigger": true
+  },
+  {
+    "query": "Tighten the existing SKILL.md in ./skills/code-audit: cut generic advice and add concrete gotchas.",
+    "should_trigger": true
+  },
+  {
+    "query": "草拟一个全新的技能，教 agent 怎么给 React 组件写单元测试",
     "should_trigger": false
   },
   {
-    "query": "这个测试为什么失败了",
+    "query": "只帮我 review 一下这个 SKILL.md 的问题并列出来，先不要修改任何文件",
     "should_trigger": false
   },
   {
-    "query": "/skill-enhance 整技能升级 evals/fixtures/target-skill，保持主体自主性并把维护内容后置",
-    "should_trigger": true
-  },
-  {
-    "query": "/skill-enhance 收紧当前这个 SKILL.md，剥掉泛化内容并补 gotchas",
-    "should_trigger": true
-  },
-  {
-    "query": "帮我给这个功能出个方案",
+    "query": "用 explain 技能画一张图解释一下我们的缓存失效机制",
     "should_trigger": false
   },
   {
-    "query": "读一下这个链接并总结重点",
+    "query": "这个仓库的 CI 为什么在 macOS 上跑失败了？帮我查一下日志",
     "should_trigger": false
   }
 ]

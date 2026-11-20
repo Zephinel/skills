@@ -1,76 +1,56 @@
-# Quickstart
+# Skill Structure and Frontmatter Reference
 
-> Create your first Agent Skill and see it work in VS Code.
+Use this reference when an existing skill has broken frontmatter, mismatched folder naming, unclear directory layout, or broken relative links.
 
-In this tutorial, you'll create a skill that gives an agent the capability to roll dice using a random number generator.
+## Required layout
 
-## Prerequisites
+A skill lives in a single directory whose name matches its `name` field:
 
-* [VS Code](https://code.visualstudio.com/) with [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot)
-
-> **Note:** This tutorial uses an editor-oriented workflow, but Agent Skills are an open format. The same skill can work in any compatible agent environment.
-
-
-## Create the skill
-
-A skill is a folder containing a `SKILL.md` file. VS Code looks for skills in `.agents/skills/` by default. Create `.agents/skills/roll-dice/SKILL.md` in your project:
-
-````markdown
----
-name: roll-dice
-description: Roll dice using a random number generator. Use when asked to roll a die (d6, d20, etc.), roll dice, or generate a random dice roll.
----
-
-To roll a die, use the following command that generates a random number from 1
-to the given number of sides:
-
-```bash
-echo $((RANDOM % <sides> + 1))
+```text
+<skill-name>/
+├── SKILL.md          # Required: YAML frontmatter + core instructions
+├── agents/           # Optional: host-specific UI metadata (e.g. openai.yaml)
+├── references/       # Optional: deep rules, checklists, or fallback procedures
+├── scripts/          # Optional: deterministic helpers and self-tests
+├── assets/           # Optional: output templates or starter files
+└── evals/            # Optional: opt-in trigger/output evals (only when enabled)
 ```
 
-```powershell
-Get-Random -Minimum 1 -Maximum (<sides> + 1)
+Keep `SKILL.md` focused on what the agent needs on every run (practically under ~500 lines). Move fallback paths, large example catalogs, and lookup tables into `references/` with explicit pointers telling the agent *when* to read each file.
+
+## `SKILL.md` YAML frontmatter
+
+Start `SKILL.md` on line 1 with a valid YAML frontmatter block delimited by `---`:
+
+```yaml
+---
+name: my-skill
+description: >
+  State what the skill does, the concrete user intents that should trigger it,
+  and clear near-miss boundaries (what it is not for).
+---
 ```
 
-Replace `<sides>` with the number of sides on the die (e.g., 6 for a standard
-die, 20 for a d20).
-````
+### Core fields
 
-That's it — one file, under 20 lines. Here's what each part does:
+- **`name`** (required): lowercase identifier (`a-z`, `0-9`, `-`) matching the parent folder name.
+- **`description`** (required): always-loaded trigger pointer. Keep it concise and under **1024 characters**. Front-load user intent, list distinct trigger branches once, and include near-miss boundaries.
+- **Optional host fields** (include only when the target host uses them):
+  - `argument-hint`: short parameter hint shown for explicit slash invocation.
+  - `user-invocable`: boolean indicating whether users can invoke the skill directly.
+  - `disable-model-invocation`: set `true` only for strictly manual skills that should never auto-trigger.
+  - `compatibility`: explicit platform or runtime constraints (e.g. macOS + Google Chrome) when the skill cannot run everywhere.
 
-* **`name`** — A short identifier for the skill. Must match the folder name.
-* **`description`** — Tells the agent when to use this skill. This is how the agent decides whether to activate it.
-* **The body** — Instructions the agent follows when the skill activates. Here, the agent is instructed to generate a random number using a terminal command, substituting the number of sides from the user's request.
+## Common structural defects to repair
 
-## Try it out
+1. **Missing or malformed frontmatter**: ensure `---` appears on line 1, YAML keys are properly quoted when values contain colons (`: `) or leading quotes, and the closing `---` exists.
+2. **`name` / folder mismatch**: align `name` with the skill directory name so skill loaders discover it reliably.
+3. **Broken relative links**: every `[label](references/...)` or `assets/...` link must resolve inside the skill root; URL-encode spaces (`%20`) in Markdown link targets or rename files without spaces.
+4. **CWD-dependent script calls**: avoid assuming the shell working directory equals the skill root. Instruct the agent to resolve scripts relative to `<skill-dir>` (the directory containing `SKILL.md`).
+5. **Unverified claims or dangling references**: remove references to other skills, files, or flags that do not exist in the repository.
 
-1. Open your project in VS Code.
-2. Open the Copilot Chat panel.
-3. Select **Agent** mode from the mode dropdown at the bottom of the chat panel.
-4. Type `/skills` to confirm that `roll-dice` appears in the list. If it doesn't, check that the file is at `.agents/skills/roll-dice/SKILL.md` relative to your project root.
-5. Ask: **"Roll a d20"**
+## Related references
 
-The agent should activate the `roll-dice` skill. It may ask for permission to run a terminal command — allow it. It will run the command and return a random number between 1 and 20.
-
-> **Note:** Tool-use reliability varies across models — some follow skill instructions and run commands consistently, while others may attempt to answer on their own. If the agent responds without running a terminal command, try selecting a different model from the model dropdown.
-
-
-## How it works
-
-Here's what happened behind the scenes:
-
-1. **Discovery** — When the chat session started, the agent scanned default skill directories and found your skill. It read only the `name` and `description`, just enough to know when the skill might be relevant.
-
-2. **Activation** — When you asked about rolling dice, the agent matched your question to the skill's description and loaded the full `SKILL.md` body into context.
-
-3. **Execution** — The agent followed the instructions in the body, adapting the terminal command to the number of sides in your request.
-
-This process uses **progressive disclosure** to let the agent access many skills without loading all their instructions up front.
-
-## Next steps
-
-You've created a working Agent Skill. From here:
-
-* **[Best practices](./Best%20practices.md)** — How to write skills that are well-scoped and effective.
-* **[Optimizing skill descriptions](./Optimizing%20skill%20descriptions.md)** — Test and improve your skill's description so it activates on the right prompts.
-* **Specification** — The complete format reference for `SKILL.md` files.
+- [Best practices](./Best%20practices.md) — progressive disclosure, defaults, and gotchas.
+- [Optimizing skill descriptions](./Optimizing%20skill%20descriptions.md) — trigger wording and query evals.
+- [Using scripts in skills](./Using%20scripts%20in%20skills.md) — non-interactive script design.

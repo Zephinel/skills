@@ -32,7 +32,7 @@ Inspect the actual repository first; never guess commands, remotes, versions, or
 ## Step 2 — Apply the core contract
 
 ### 1. Index, not manual
-- **First screen earns the rest**: bold one-liner stating concrete value (no "A tool that…", no throat-clearing, no AI hype like *seamless / robust / comprehensive / cutting-edge / blazing fast*), 3–6 objective badges (version, license, CI, runtime), and an immediate working example or real screenshot **before** deep setup prose.
+- **First screen earns the rest**: bold one-liner stating concrete value (no "A tool that…", no throat-clearing, no AI hype like *seamless / robust / comprehensive / cutting-edge / blazing fast*), 3–6 objective badges when applicable (version, license, CI, runtime), and an immediate working example or real screenshot **before** deep setup prose.
 - **Line budget**: aim for **~100–240 lines** for a mature project. Push multi-step runbooks, full option catalogs, architecture deep-dives, FAQ walls, and historical verification logs into `docs/` and replace them with a compact documentation index table.
 - **Four audiences**: serve **Users** (quickest path to value), **Developers** (get the code, prerequisites with *why* version pins matter, dev mode vs production build), **Contributors** (link `CONTRIBUTING.md` / `LICENSE` / `CHANGELOG.md`, never paste them), and **AI coding agents** (copy-pasteable commands without `$` prefixes, unambiguous paths, `AGENTS.md` pointer if present).
 

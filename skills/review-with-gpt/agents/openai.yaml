@@ -1,0 +1,4 @@
+interface:
+  display_name: "review-with-gpt"
+  short_description: "Send a file, diff, or question to an open macOS Chrome web chat and read the answer back"
+  default_prompt: "Use $review-with-gpt to send the requested diff, file, or question to the signed-in web chat tab open in Chrome and bring back the answer."
