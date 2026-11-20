@@ -1,0 +1,49 @@
+name: Repository Skill Checks
+
+run-name: Repository Skill Checks · ${{ github.event_name }} · ${{ github.event.pull_request.number || github.ref_name }}
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "README.md"
+      - "scripts/**"
+      - "skills/**"
+      - ".github/workflows/repo-checks.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "README.md"
+      - "scripts/**"
+      - "skills/**"
+      - ".github/workflows/repo-checks.yml"
+
+concurrency:
+  group: repo-checks-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run repository structure, link, syntax, and JSON checks
+        run: python3 scripts/check-repo.py
+      - name: Run plain-ui-copy unit tests
+        run: python3 skills/plain-ui-copy/scripts/test_scan_copy.py
+      - name: Run review-with-gpt script unit tests
+        run: python3 skills/review-with-gpt/scripts/test_scripts.py

@@ -87,16 +87,16 @@ $skill-enhance Add acceptance evals to ./skills/report-writer and compare agains
 
 ## review-with-gpt
 
-`review-with-gpt` posts a prompt into a chat page the user already has open in Chrome — ChatGPT, Claude, Gemini — and reads the answer back as text. It uses the signed-in browser session, so it needs no API key. It can send a file, a diff, or a question, wait for the turn, and recover from a stalled or truncated answer.
+`review-with-gpt` posts a prompt into a chat page the user already has open in Google Chrome on macOS and reads the answer back as text. It uses the signed-in browser session, so it needs no API key. It can send a file, a diff, or a question, wait for the turn, and recover from a stalled or truncated answer.
 
-The skill runs on macOS with Google Chrome. The preferred route drives the page through JavaScript from Apple Events, which requires **View → Developer → Allow JavaScript from Apple Events** in Chrome. The fallback route pastes and clicks with compiled Swift helpers; it needs macOS accessibility and screen-recording permission, and it is slower and less reliable.
+The bundled scripts (`run-js.py` and `wait-answer.py`) and default selectors target **ChatGPT**; **Claude**, **Gemini**, and other web chats work by probing their live DOM selectors or taking the mouse/keyboard input route. The preferred JS route requires **View → Developer → Allow JavaScript from Apple Events** in Chrome. The fallback route pastes and clicks with compiled Swift helpers; it needs macOS Accessibility and Screen Recording permissions, and it is slower and less reliable.
 
 The prompt leaves the machine under the user's account. Do not put credentials in it.
 
 ```text
 $review-with-gpt Ask the ChatGPT tab I have open to review this diff.
 $review-with-gpt 去 ChatGPT 里问问它这段迁移脚本有什么风险。
-$review-with-gpt Pull the latest answer out of the Gemini tab.
+$review-with-gpt Pull the latest answer out of my open ChatGPT tab.
 ```
 
 ## Repository layout
@@ -105,7 +105,11 @@ $review-with-gpt Pull the latest answer out of the Gemini tab.
 .
 ├── LICENSE
 ├── README.md
-├── .github/workflows/skill-enhance-checks.yml
+├── .github/workflows/
+│   ├── repo-checks.yml
+│   └── skill-enhance-checks.yml
+├── scripts/
+│   └── check-repo.py
 └── skills/
     ├── explain/
     │   ├── SKILL.md
@@ -122,9 +126,12 @@ $review-with-gpt Pull the latest answer out of the Gemini tab.
     │   └── references/
     ├── review-with-gpt/
     │   ├── SKILL.md
+    │   ├── agents/
+    │   ├── references/
     │   └── scripts/
     └── skill-enhance/
         ├── SKILL.md
+        ├── agents/
         ├── assets/
         ├── evals/
         ├── references/
@@ -135,14 +142,16 @@ Each skill includes its own supporting resources. The example skills under `skil
 
 ## Development checks
 
-Run the complete `skill-enhance` regression suite from the repository root with Bash and Python 3 available:
+Run all repository checks and skill test suites from the repository root with Bash and Python 3 available:
 
 ```bash
-bash skills/skill-enhance/scripts/test-all.sh
+python3 scripts/check-repo.py
 python3 skills/plain-ui-copy/scripts/test_scan_copy.py
+python3 skills/review-with-gpt/scripts/test_scripts.py
+bash skills/skill-enhance/scripts/test-all.sh
 ```
 
-The suite checks shell and Python syntax, JSON data, evaluation lifecycle, path safety, reference isolation, evidence handling, memory binding, and lock behavior. GitHub Actions runs it on Linux and macOS with Python 3.12.
+`check-repo.py` validates skill frontmatter, `agents/openai.yaml`, relative Markdown links, Python syntax, and strict JSON across all skills. `skill-enhance/scripts/test-all.sh` checks shell and Python syntax, JSON data, evaluation lifecycle, path safety, reference isolation, evidence handling, memory binding, and lock behavior. GitHub Actions runs these suites on Linux and macOS with Python 3.12.
 
 To check skill discovery without installing anything:
 
